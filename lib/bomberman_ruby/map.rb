@@ -48,7 +48,7 @@ module BombermanRuby
       8.times { soft_blocks.pop.item = :bomb_up }
       8.times { soft_blocks.pop.item = :fire_up }
       4.times { soft_blocks.pop.item = :speed_up }
-      20.times { soft_blocks.pop.item = :skull }
+      soft_blocks.pop.item = :skull
     end
   end
 end
