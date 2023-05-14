@@ -3,7 +3,6 @@
 module BombermanRuby
   class Player < Entity
     PLAYER_Z = 10
-    SPRITE_REFRESH_RATE = 200
     SPRITE_WIDTH = 15
     SPRITES = Gosu::Image.load_tiles(
       "#{__dir__}/../../assets/images/player.png",
@@ -22,13 +21,15 @@ module BombermanRuby
 
     def update
       move!
+      check_collisions!
+      execute_actions!
     end
 
     def draw
       scale_x = @direction == :right ? -1 : 1
       draw_x = @direction == :right ? @x + SPRITE_WIDTH : @x
       current_sprite.draw(draw_x, @y, PLAYER_Z, scale_x)
-      debug_hitbox
+      # debug_hitbox
     end
 
     def hitbox
@@ -40,10 +41,18 @@ module BombermanRuby
       }
     end
 
+    def bomb_radius
+      2
+    end
+
     private
 
     def speed
       1
+    end
+
+    def bomb_capacity
+      2
     end
 
     def current_sprite
@@ -90,9 +99,38 @@ module BombermanRuby
     def can_move_to?(target_x, target_y)
       @map.entities.none? do |entity|
         next unless entity.is_a?(Blockable)
+        next if entity.is_a?(Bomb) && collide?(entity, @x, @y)
 
         collide?(entity, target_x, target_y)
       end
+    end
+
+    def check_collisions!
+      fire_collisions!
+    end
+
+    def fire_collisions!
+      return unless @map.entities.any? { |e| e.is_a?(Fire) && collide?(e, @x, @y) }
+
+      @map.players.delete(self)
+    end
+
+    def execute_actions!
+      drop_bomb! if Gosu.button_down?(Gosu::KB_X)
+    end
+
+    def bomb_capacity_reached?
+      @map.entities.count { |e| e.is_a?(Bomb) && e.player == self } >= bomb_capacity
+    end
+
+    def drop_bomb!
+      return if bomb_capacity_reached?
+      return if @map.entities.any? do |e|
+                  e.is_a?(Bomb) &&
+                  grid_collide?(e, center_grid_coord[:x], center_grid_coord[:y])
+                end
+
+      @map.entities << Bomb.new(grid_x: center_grid_coord[:x], grid_y: center_grid_coord[:y], map: @map, player: self)
     end
   end
 end

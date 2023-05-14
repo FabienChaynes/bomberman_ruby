@@ -2,13 +2,24 @@
 
 module BombermanRuby
   class Entity
+    SPRITE_REFRESH_RATE = 200
+
     attr_accessor :x, :y
+
+    def self.coord_to_grid_coord(x, y)
+      {
+        x: x.to_i / Window::SPRITE_SIZE,
+        y: (y.to_i - Map::VERTICAL_MARGIN) / Window::SPRITE_SIZE,
+      }
+    end
 
     def initialize(grid_x:, grid_y:, map:)
       @x = grid_x * Window::SPRITE_SIZE
       @y = grid_y * Window::SPRITE_SIZE
       @map = map
     end
+
+    def update; end
 
     def draw; end
 
@@ -21,7 +32,15 @@ module BombermanRuby
       }
     end
 
+    def grid_pos
+      self.class.coord_to_grid_coord(@x, @y)
+    end
+
     private
+
+    def grid_collide?(other_entity, target_grid_x, target_grid_y)
+      other_entity.grid_pos[:x] == target_grid_x && other_entity.grid_pos[:y] == target_grid_y
+    end
 
     def collide?(other_entity, target_x, target_y) # rubocop:disable Metrics/AbcSize
       return true if target_y + hitbox[:up] < Map::VERTICAL_MARGIN
@@ -31,6 +50,17 @@ module BombermanRuby
       return false if target_y + hitbox[:up] >= other_entity.y + other_entity.hitbox[:down]
 
       true
+    end
+
+    def center
+      {
+        x: ((@x + hitbox[:left]) + (@x + hitbox[:right])) / 2.0,
+        y: ((@y + hitbox[:up]) + (@y + hitbox[:down])) / 2.0,
+      }
+    end
+
+    def center_grid_coord
+      Entity.coord_to_grid_coord(center[:x], center[:y])
     end
 
     def debug_hitbox # rubocop:disable Metrics/AbcSize

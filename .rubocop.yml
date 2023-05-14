@@ -2,6 +2,16 @@ AllCops:
   NewCops: enable
   TargetRubyVersion: 3.1
 
+Metrics/ClassLength:
+  Enabled: true
+  Max: 150
+
+Naming/MethodParameterName:
+  Enabled: true
+  AllowedNames:
+    - x
+    - y
+
 Style/Documentation:
   Enabled: false
 

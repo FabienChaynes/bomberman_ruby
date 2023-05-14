@@ -2,6 +2,8 @@
 
 module BombermanRuby
   class SoftBlock < Block
+    include Burnable
+
     BLOCK_Z = 1
     SOFT_BLOCK_SPRITES = Gosu::Image.load_tiles(
       "#{__dir__}/../../assets/images/soft_block.png",
