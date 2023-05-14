@@ -13,18 +13,20 @@ module BombermanRuby
       @map_background = MAP_BACKGROUNDS[0]
       @map_path = "#{__dir__}/../../assets/maps/1.txt"
       @entities = []
+      @players = [Player.new(grid_x: 1, grid_y: 0, map: self)]
       load!
     end
 
     def draw
       @map_background.draw(0, 0, BACKGROUND_Z)
       @entities.each(&:draw)
+      @players.each(&:draw)
     end
 
     private
 
     def load!
-      lines = File.read(@map_path).split("\n").map { |l| l.split("") }
+      lines = File.read(@map_path).split("\n").map(&:chars)
       lines.each_with_index do |line, y|
         line.each_with_index do |c, x|
           @entities << CHARS_MAPPING[c].new(grid_x: x, grid_y: y, map: self) if CHARS_MAPPING.key?(c)

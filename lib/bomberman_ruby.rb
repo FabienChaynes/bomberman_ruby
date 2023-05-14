@@ -2,7 +2,9 @@
 
 require_relative "bomberman_ruby/version"
 require_relative "bomberman_ruby/window"
+require_relative "bomberman_ruby/entity"
 require_relative "bomberman_ruby/soft_block"
+require_relative "bomberman_ruby/player"
 require_relative "bomberman_ruby/map"
 
 module BombermanRuby

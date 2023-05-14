@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module BombermanRuby
-  class SoftBlock
+  class SoftBlock < Entity
     BLOCK_Z = 1
     SOFT_BLOCK_SPRITES = Gosu::Image.load_tiles(
       "#{__dir__}/../../assets/images/soft_block.png",
@@ -9,12 +9,9 @@ module BombermanRuby
       Window::SPRITE_SIZE
     ).freeze
 
-    attr_accessor :x, :y
-
-    def initialize(grid_x:, grid_y:, map:)
-      @x = grid_x * Window::SPRITE_SIZE
-      @y = grid_y * Window::SPRITE_SIZE + Map::VERTICAL_MARGIN
-      @map = map
+    def initialize(args)
+      super(**args)
+      @y += Map::VERTICAL_MARGIN
     end
 
     def draw
