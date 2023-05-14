@@ -6,7 +6,9 @@ module BombermanRuby
     include Burnable
 
     BOMB_Z = 5
+    BOMB_HYPERACTIVITY_DELAY_MS = 1000
     BOMB_DELAY_MS = 3000
+    BOMB_LETHARGY_DELAY_MS = 5000
     SPRITE_REFRESH_RATE = 300
     SPRITES = Gosu::Image.load_tiles(
       "#{__dir__}/../../assets/images/bomb.png",
@@ -31,7 +33,7 @@ module BombermanRuby
     end
 
     def update
-      return if Gosu.milliseconds < @dropped_at + BOMB_DELAY_MS
+      return if Gosu.milliseconds < @dropped_at + bomb_delay
 
       explode!
     end
@@ -45,6 +47,17 @@ module BombermanRuby
     end
 
     private
+
+    def bomb_delay
+      case @player.skull_effect
+      when :hyperactivity
+        BOMB_HYPERACTIVITY_DELAY_MS
+      when :lethargy
+        BOMB_LETHARGY_DELAY_MS
+      else
+        BOMB_DELAY_MS
+      end
+    end
 
     def explode!
       @map.entities.delete(self)

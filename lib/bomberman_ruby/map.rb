@@ -40,6 +40,15 @@ module BombermanRuby
           @entities << CHARS_MAPPING[c].new(grid_x: x, grid_y: y, map: self) if CHARS_MAPPING.key?(c)
         end
       end
+      load_items!
+    end
+
+    def load_items!
+      soft_blocks = @entities.select { |e| e.is_a?(SoftBlock) }.shuffle
+      8.times { soft_blocks.pop.item = :bomb_up }
+      8.times { soft_blocks.pop.item = :fire_up }
+      4.times { soft_blocks.pop.item = :speed_up }
+      20.times { soft_blocks.pop.item = :skull }
     end
   end
 end

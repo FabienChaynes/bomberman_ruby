@@ -4,7 +4,7 @@ AllCops:
 
 Metrics/ClassLength:
   Enabled: true
-  Max: 150
+  Max: 250
 
 Naming/MethodParameterName:
   Enabled: true

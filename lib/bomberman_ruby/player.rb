@@ -12,23 +12,50 @@ module BombermanRuby
     WALKING_DOWN_SPRITES = [SPRITES[0], SPRITES[1], SPRITES[0], SPRITES[2]].freeze
     WALKING_LEFT_SPRITES = [SPRITES[6], SPRITES[7], SPRITES[6], SPRITES[8]].freeze
     WALKING_UP_SPRITES = [SPRITES[12], SPRITES[13], SPRITES[12], SPRITES[14]].freeze
+    MAX_BOMB_CAPACITY = 5
+    MAX_BOMB_RADIUS = 9
+    SKULL_EFFECT_DURATION_MS = 10_000
+    SKULL_EFFECT_COLORS = [
+      Gosu::Color.new(0xff_ffffff),
+      Gosu::Color.new(0xff_cccccc),
+      Gosu::Color.new(0xff_999999),
+      Gosu::Color.new(0xff_666666),
+      Gosu::Color.new(0xff_333333),
+      Gosu::Color.new(0xff_666666),
+      Gosu::Color.new(0xff_999999),
+      Gosu::Color.new(0xff_cccccc)
+    ].freeze
+    ITEM_METHOD_MAPPING = {
+      BombermanRuby::BombUp => :increase_bomb_capacity!,
+      BombermanRuby::FireUp => :increase_bomb_radius!,
+      BombermanRuby::SpeedUp => :increase_speed!,
+      BombermanRuby::Skull => :trigger_skull_effect!,
+    }.freeze
+
+    attr_reader :skull_effect
 
     def initialize(args)
       super(**args)
       @direction = :down
       @moving = false
+      @bomb_capacity = 1
+      @bomb_radius = 1
+      @speed = 1
+      @skull_effect = nil
+      @skull_effect_started_at = nil
     end
 
     def update
       move!
       check_collisions!
+      cancel_skull_effect!
       execute_actions!
     end
 
     def draw
       scale_x = @direction == :right ? -1 : 1
       draw_x = @direction == :right ? @x + SPRITE_WIDTH : @x
-      current_sprite.draw(draw_x, @y, PLAYER_Z, scale_x)
+      current_sprite.draw(draw_x, @y, PLAYER_Z, scale_x, 1, sprite_color)
       # debug_hitbox
     end
 
@@ -42,17 +69,34 @@ module BombermanRuby
     end
 
     def bomb_radius
-      2
+      case @skull_effect
+      when :wimp_syndrome
+        1
+      else
+        @bomb_radius
+      end
     end
 
     private
 
     def speed
-      1
+      case @skull_effect
+      when :lead_feet
+        0.5
+      when :lightining_feet
+        3
+      else
+        @speed
+      end
     end
 
     def bomb_capacity
-      2
+      case @skull_effect
+      when :wimp_syndrome
+        1
+      else
+        @bomb_capacity
+      end
     end
 
     def current_sprite
@@ -67,6 +111,14 @@ module BombermanRuby
       @moving ? sprites[(Gosu.milliseconds / SPRITE_REFRESH_RATE) % sprites.size] : sprites.first
     end
 
+    def sprite_color
+      if @skull_effect
+        SKULL_EFFECT_COLORS[(Gosu.milliseconds / SPRITE_REFRESH_RATE) % SKULL_EFFECT_COLORS.size]
+      else
+        Gosu::Color.new(0xff_ffffff)
+      end
+    end
+
     def move!
       @moving = false
 
@@ -74,10 +126,55 @@ module BombermanRuby
       move_horizontal!
     end
 
+    def up_control?
+      case @skull_effect
+      when :reversal_syndrome
+        Gosu.button_down?(Gosu::KB_DOWN)
+      else
+        Gosu.button_down?(Gosu::KB_UP)
+      end
+    end
+
+    def down_control?
+      case @skull_effect
+      when :reversal_syndrome
+        Gosu.button_down?(Gosu::KB_UP)
+      else
+        Gosu.button_down?(Gosu::KB_DOWN)
+      end
+    end
+
+    def left_control?
+      case @skull_effect
+      when :reversal_syndrome
+        Gosu.button_down?(Gosu::KB_RIGHT)
+      else
+        Gosu.button_down?(Gosu::KB_LEFT)
+      end
+    end
+
+    def right_control?
+      case @skull_effect
+      when :reversal_syndrome
+        Gosu.button_down?(Gosu::KB_LEFT)
+      else
+        Gosu.button_down?(Gosu::KB_RIGHT)
+      end
+    end
+
+    def bomb_control?
+      case @skull_effect
+      when :diarrhea
+        true
+      else
+        Gosu.button_down?(Gosu::KB_X)
+      end
+    end
+
     def move_vertical!
       y_delta = 0
-      y_delta -= speed if Gosu.button_down?(Gosu::KB_UP)
-      y_delta += speed if Gosu.button_down?(Gosu::KB_DOWN)
+      y_delta -= speed if up_control?
+      y_delta += speed if down_control?
       return unless y_delta != 0 && can_move_to?(@x, @y + y_delta)
 
       @y += y_delta
@@ -87,8 +184,8 @@ module BombermanRuby
 
     def move_horizontal!
       x_delta = 0
-      x_delta -= speed if Gosu.button_down?(Gosu::KB_LEFT)
-      x_delta += speed if Gosu.button_down?(Gosu::KB_RIGHT)
+      x_delta -= speed if left_control?
+      x_delta += speed if right_control?
       return unless x_delta != 0 && can_move_to?(@x + x_delta, @y)
 
       @x += x_delta
@@ -107,6 +204,31 @@ module BombermanRuby
 
     def check_collisions!
       fire_collisions!
+      item_collisions!
+    end
+
+    def item_collisions!
+      return unless (item = @map.entities.find { |e| e.is_a?(Item) && collide?(e, @x, @y) })
+
+      send(ITEM_METHOD_MAPPING[item.class])
+      @map.entities.delete(item)
+    end
+
+    def increase_bomb_capacity!
+      @bomb_capacity += 1 unless @bomb_capacity >= MAX_BOMB_CAPACITY
+    end
+
+    def increase_bomb_radius!
+      @bomb_radius += 1 unless @bomb_radius >= MAX_BOMB_RADIUS
+    end
+
+    def increase_speed!
+      @speed += 0.2
+    end
+
+    def trigger_skull_effect!
+      @skull_effect = Skull::EFFECTS.sample
+      @skull_effect_started_at = Gosu.milliseconds
     end
 
     def fire_collisions!
@@ -115,12 +237,18 @@ module BombermanRuby
       @map.players.delete(self)
     end
 
+    def cancel_skull_effect!
+      return unless @skull_effect_started_at && @skull_effect_started_at + SKULL_EFFECT_DURATION_MS < Gosu.milliseconds
+
+      @skull_effect = @skull_effect_started_at = nil
+    end
+
     def execute_actions!
-      drop_bomb! if Gosu.button_down?(Gosu::KB_X)
+      drop_bomb! if bomb_control?
     end
 
     def bomb_capacity_reached?
-      @map.entities.count { |e| e.is_a?(Bomb) && e.player == self } >= bomb_capacity
+      @skull_effect == :constipation || @map.entities.count { |e| e.is_a?(Bomb) && e.player == self } >= bomb_capacity
     end
 
     def drop_bomb!
