@@ -7,9 +7,10 @@ module BombermanRuby
     WIDTH = 240
     HEIGHT = 160
     SPRITE_SIZE = 16
+    SCALING_FACTOR = 3
 
     def initialize
-      super(WIDTH, HEIGHT)
+      super(WIDTH * SCALING_FACTOR, HEIGHT * SCALING_FACTOR)
       @map = Map.new
     end
 
@@ -18,7 +19,9 @@ module BombermanRuby
     end
 
     def draw
-      @map.draw
+      Gosu.scale(SCALING_FACTOR, SCALING_FACTOR) do
+        @map.draw
+      end
     end
   end
 end
