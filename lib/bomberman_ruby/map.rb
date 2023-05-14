@@ -5,9 +5,12 @@ module BombermanRuby
     BACKGROUND_Z = 0
     CHARS_MAPPING = {
       "s" => SoftBlock,
+      "x" => HardBlock,
     }.freeze
     MAP_BACKGROUNDS = Gosu::Image.load_tiles("#{__dir__}/../../assets/images/maps.png", 240, 160).freeze
     VERTICAL_MARGIN = 8
+
+    attr_reader :entities
 
     def initialize
       @map_background = MAP_BACKGROUNDS[0]
@@ -15,6 +18,10 @@ module BombermanRuby
       @entities = []
       @players = [Player.new(grid_x: 1, grid_y: 0, map: self)]
       load!
+    end
+
+    def update
+      @players.each(&:update)
     end
 
     def draw

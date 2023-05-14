@@ -14,6 +14,7 @@ module BombermanRuby
     end
 
     def update
+      @map.update
     end
 
     def draw
