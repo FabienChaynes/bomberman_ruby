@@ -20,6 +20,8 @@ require_relative "bomberman_ruby/map"
 
 module BombermanRuby
   class Error < StandardError; end
-end
 
-BombermanRuby::Window.new.show
+  def self.start
+    BombermanRuby::Window.new.show
+  end
+end
