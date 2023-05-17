@@ -10,7 +10,7 @@ module BombermanRuby
     SCALING_FACTOR = 3
 
     def initialize
-      super(WIDTH * SCALING_FACTOR, HEIGHT * SCALING_FACTOR)
+      super((WIDTH * SCALING_FACTOR).round, (HEIGHT * SCALING_FACTOR).round)
       @map = Map.new
     end
 
