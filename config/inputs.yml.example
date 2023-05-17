@@ -1,16 +1,27 @@
 0:
   up:
     - KB_UP
-    - GP_0_UP
+    - KB_W
   down:
     - KB_DOWN
-    - GP_0_DOWN
+    - KB_S
   left:
     - KB_LEFT
-    - GP_0_LEFT
+    - KB_A
   right:
     - KB_RIGHT
-    - GP_0_RIGHT
+    - KB_D
   bomb:
     - KB_X
+    - KB_LEFT_SHIFT
+1:
+  up:
+    - GP_0_UP
+  down:
+    - GP_0_DOWN
+  left:
+    - GP_0_LEFT
+  right:
+    - GP_0_RIGHT
+  bomb:
     - GP_0_BUTTON_0

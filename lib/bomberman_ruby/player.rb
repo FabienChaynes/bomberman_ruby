@@ -3,6 +3,7 @@
 module BombermanRuby
   class Player < Entity
     PLAYER_Z = 10
+    SPRITE_COUNT = 10
     SPRITE_WIDTH = 15
     SPRITE_HEIGHT = 24
     SPRITES = Gosu::Image.load_tiles(
@@ -10,9 +11,9 @@ module BombermanRuby
       SPRITE_WIDTH,
       SPRITE_HEIGHT
     ).freeze
-    WALKING_DOWN_SPRITES = [SPRITES[0], SPRITES[1], SPRITES[0], SPRITES[2]].freeze
-    WALKING_LEFT_SPRITES = [SPRITES[3], SPRITES[4], SPRITES[3], SPRITES[5]].freeze
-    WALKING_UP_SPRITES = [SPRITES[6], SPRITES[7], SPRITES[6], SPRITES[8]].freeze
+    WALKING_DOWN_SPRITES = [0, 1, 0, 2].freeze
+    WALKING_LEFT_SPRITES = [3, 4, 3, 5].freeze
+    WALKING_UP_SPRITES = [6, 7, 6, 8].freeze
     MAX_BOMB_CAPACITY = 5
     MAX_BOMB_RADIUS = 9
     SKULL_EFFECT_DURATION_MS = 10_000
@@ -37,6 +38,7 @@ module BombermanRuby
 
     def initialize(args)
       @input = args.delete(:input)
+      @id = args.delete(:id)
       super(**args)
       @direction = :down
       @moving = false
@@ -101,14 +103,26 @@ module BombermanRuby
       end
     end
 
+    def walking_down_sprites
+      @walking_down_sprites ||= WALKING_DOWN_SPRITES.map { |i| SPRITES[(@id * SPRITE_COUNT) + i] }
+    end
+
+    def walking_up_sprites
+      @walking_up_sprites ||= WALKING_UP_SPRITES.map { |i| SPRITES[(@id * SPRITE_COUNT) + i] }
+    end
+
+    def walking_left_sprites
+      @walking_left_sprites ||= WALKING_LEFT_SPRITES.map { |i| SPRITES[(@id * SPRITE_COUNT) + i] }
+    end
+
     def current_sprite
       sprites = case @direction
                 when :down
-                  WALKING_DOWN_SPRITES
+                  walking_down_sprites
                 when :up
-                  WALKING_UP_SPRITES
+                  walking_up_sprites
                 when :left, :right
-                  WALKING_LEFT_SPRITES
+                  walking_left_sprites
                 end
       @moving ? sprites[(Gosu.milliseconds / SPRITE_REFRESH_RATE) % sprites.size] : sprites.first
     end

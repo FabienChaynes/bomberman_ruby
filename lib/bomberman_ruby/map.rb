@@ -17,7 +17,8 @@ module BombermanRuby
       @map_background = MAP_BACKGROUNDS[0]
       @map_path = "#{__dir__}/../../assets/maps/1.txt"
       @entities = []
-      @players = [Player.new(grid_x: 1, grid_y: 0, map: self, input: @game.inputs[0])]
+      @players = [Player.new(grid_x: 1, grid_y: 0, map: self, input: @game.inputs[0], id: 0)]
+      @players << Player.new(grid_x: 13, grid_y: 8, map: self, input: @game.inputs[1], id: 1)
       load!
     end
 
