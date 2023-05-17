@@ -1,0 +1,43 @@
+#!/bin/bash
+
+if [ $# -lt 1 ]
+then
+  echo "The original file name must be provided"
+  exit 1
+fi
+
+if [ -f $1 ]
+then
+# White to black
+convert $1 \
+-fill "#686868" -opaque "#f8f8f8" \
+-fill "#606060" -opaque "#88a8f8" \
+-fill "#404040" -opaque "#b8b8b8" \
+-fill "#404040" -opaque "#3060f0" \
+player_1.png
+
+# White to blue
+convert $1 \
+-fill "#5898f8" -opaque "#f8f8f8" \
+-fill "#5090f8" -opaque "#88a8f8" \
+-fill "#4068d0" -opaque "#b8b8b8" \
+-fill "#4068d0" -opaque "#3060f0" \
+-fill "#2838a8" -opaque "#707070" \
+player_2.png
+
+# White to red
+convert $1 \
+-fill "#f02830" -opaque "#f8f8f8" \
+-fill "#e82830" -opaque "#88a8f8" \
+-fill "#a01818" -opaque "#b8b8b8" \
+-fill "#b02028" -opaque "#3060f0" \
+-fill "#701018" -opaque "#707070" \
+-fill "#68d068" -opaque "#f898a0" \
+-fill "#408840" -opaque "#d01830" \
+player_3.png
+
+convert player_0.png player_1.png player_2.png player_3.png -append player.png
+rm player_1.png player_2.png player_3.png
+else
+  echo "File does not exist"
+fi

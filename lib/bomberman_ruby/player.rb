@@ -4,14 +4,15 @@ module BombermanRuby
   class Player < Entity
     PLAYER_Z = 10
     SPRITE_WIDTH = 15
+    SPRITE_HEIGHT = 24
     SPRITES = Gosu::Image.load_tiles(
       "#{__dir__}/../../assets/images/player.png",
       SPRITE_WIDTH,
-      22
+      SPRITE_HEIGHT
     ).freeze
     WALKING_DOWN_SPRITES = [SPRITES[0], SPRITES[1], SPRITES[0], SPRITES[2]].freeze
-    WALKING_LEFT_SPRITES = [SPRITES[6], SPRITES[7], SPRITES[6], SPRITES[8]].freeze
-    WALKING_UP_SPRITES = [SPRITES[12], SPRITES[13], SPRITES[12], SPRITES[14]].freeze
+    WALKING_LEFT_SPRITES = [SPRITES[3], SPRITES[4], SPRITES[3], SPRITES[5]].freeze
+    WALKING_UP_SPRITES = [SPRITES[6], SPRITES[7], SPRITES[6], SPRITES[8]].freeze
     MAX_BOMB_CAPACITY = 5
     MAX_BOMB_RADIUS = 9
     SKULL_EFFECT_DURATION_MS = 10_000
@@ -61,8 +62,8 @@ module BombermanRuby
 
     def hitbox
       {
-        up: 12,
-        down: 22,
+        up: 14,
+        down: 24,
         left: 1,
         right: 14,
       }
