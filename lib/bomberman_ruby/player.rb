@@ -36,6 +36,7 @@ module BombermanRuby
     attr_reader :skull_effect
 
     def initialize(args)
+      @input = args.delete(:input)
       super(**args)
       @direction = :down
       @moving = false
@@ -130,36 +131,36 @@ module BombermanRuby
     def up_control?
       case @skull_effect
       when :reversal_syndrome
-        Gosu.button_down?(Gosu::KB_DOWN)
+        @input.down?
       else
-        Gosu.button_down?(Gosu::KB_UP)
+        @input.up?
       end
     end
 
     def down_control?
       case @skull_effect
       when :reversal_syndrome
-        Gosu.button_down?(Gosu::KB_UP)
+        @input.up?
       else
-        Gosu.button_down?(Gosu::KB_DOWN)
+        @input.down?
       end
     end
 
     def left_control?
       case @skull_effect
       when :reversal_syndrome
-        Gosu.button_down?(Gosu::KB_RIGHT)
+        @input.right?
       else
-        Gosu.button_down?(Gosu::KB_LEFT)
+        @input.left?
       end
     end
 
     def right_control?
       case @skull_effect
       when :reversal_syndrome
-        Gosu.button_down?(Gosu::KB_LEFT)
+        @input.left?
       else
-        Gosu.button_down?(Gosu::KB_RIGHT)
+        @input.right?
       end
     end
 
@@ -168,7 +169,7 @@ module BombermanRuby
       when :diarrhea
         true
       else
-        Gosu.button_down?(Gosu::KB_X)
+        @input.bomb?
       end
     end
 

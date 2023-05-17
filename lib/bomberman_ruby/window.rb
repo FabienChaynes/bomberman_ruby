@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "gosu"
-
 module BombermanRuby
   class Window < Gosu::Window
     WIDTH = 240
@@ -11,16 +9,16 @@ module BombermanRuby
 
     def initialize
       super((WIDTH * SCALING_FACTOR).round, (HEIGHT * SCALING_FACTOR).round)
-      @map = Map.new
+      @game = Game.new
     end
 
     def update
-      @map.update
+      @game.update
     end
 
     def draw
       Gosu.scale(SCALING_FACTOR, SCALING_FACTOR) do
-        @map.draw
+        @game.draw
       end
     end
   end

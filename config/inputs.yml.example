@@ -1,0 +1,16 @@
+0:
+  up:
+    - KB_UP
+    - GP_0_UP
+  down:
+    - KB_DOWN
+    - GP_0_DOWN
+  left:
+    - KB_LEFT
+    - GP_0_LEFT
+  right:
+    - KB_RIGHT
+    - GP_0_RIGHT
+  bomb:
+    - KB_X
+    - GP_0_BUTTON_0

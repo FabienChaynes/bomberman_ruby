@@ -1,7 +1,12 @@
 # frozen_string_literal: true
 
+require "gosu"
+require "yaml"
+
 require_relative "bomberman_ruby/version"
 require_relative "bomberman_ruby/window"
+require_relative "bomberman_ruby/game"
+require_relative "bomberman_ruby/input"
 require_relative "bomberman_ruby/entity"
 require_relative "bomberman_ruby/blockable"
 require_relative "bomberman_ruby/burnable"

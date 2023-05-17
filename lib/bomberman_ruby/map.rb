@@ -12,11 +12,12 @@ module BombermanRuby
 
     attr_accessor :entities, :players
 
-    def initialize
+    def initialize(game:)
+      @game = game
       @map_background = MAP_BACKGROUNDS[0]
       @map_path = "#{__dir__}/../../assets/maps/1.txt"
       @entities = []
-      @players = [Player.new(grid_x: 1, grid_y: 0, map: self)]
+      @players = [Player.new(grid_x: 1, grid_y: 0, map: self, input: @game.inputs[0])]
       load!
     end
 

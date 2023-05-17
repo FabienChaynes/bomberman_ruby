@@ -9,6 +9,7 @@ Metrics/ClassLength:
 Naming/MethodParameterName:
   Enabled: true
   AllowedNames:
+    - up
     - x
     - y
 
