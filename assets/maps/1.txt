@@ -1,4 +1,4 @@
-x..sssss..ss..x
+x0.sssss..ss.3x
 x.xsxsxsxsx.x.x
 xsssssss..s..sx
 x.x.x.xsx.xsx.x
@@ -6,5 +6,5 @@ xsssssssss.sssx
 xsx.xsxsxsxsx.x
 x..s.ss.ss.sssx
 x.x.xsx.xsxsx.x
-x..sssss.s....x
+x2.sssss.s...1x
 xxxxxxxxxxxxxxx

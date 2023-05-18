@@ -17,8 +17,8 @@ module BombermanRuby
       @map_background = MAP_BACKGROUNDS[0]
       @map_path = "#{__dir__}/../../assets/maps/1.txt"
       @entities = []
-      @players = [Player.new(grid_x: 1, grid_y: 0, map: self, input: @game.inputs[0], id: 0)]
-      @players << Player.new(grid_x: 13, grid_y: 8, map: self, input: @game.inputs[1], id: 1)
+      @players = []
+      @starting_positions = {}
       load!
     end
 
@@ -40,9 +40,11 @@ module BombermanRuby
       lines.each_with_index do |line, y|
         line.each_with_index do |c, x|
           @entities << CHARS_MAPPING[c].new(grid_x: x, grid_y: y, map: self) if CHARS_MAPPING.key?(c)
+          @starting_positions[c.to_i] = StartingPosition.new(grid_x: x, grid_y: y) if ("0".."3").include?(c)
         end
       end
       load_items!
+      load_players!
     end
 
     def load_items!
@@ -51,6 +53,20 @@ module BombermanRuby
       8.times { soft_blocks.pop.item = :fire_up }
       4.times { soft_blocks.pop.item = :speed_up }
       soft_blocks.pop.item = :skull
+    end
+
+    def load_players!
+      @starting_positions.count.times do |i|
+        next unless @game.inputs[i]
+
+        @players << Player.new(
+          grid_x: @starting_positions[i].grid_x,
+          grid_y: @starting_positions[i].grid_y,
+          map: self,
+          input: @game.inputs[i],
+          id: i
+        )
+      end
     end
   end
 end
