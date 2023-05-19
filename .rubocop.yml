@@ -2,6 +2,10 @@ AllCops:
   NewCops: enable
   TargetRubyVersion: 3.1
 
+Lint/EmptyClass:
+  Enabled: true
+  AllowComments: true
+
 Metrics/ClassLength:
   Enabled: true
   Max: 250
@@ -23,6 +27,10 @@ Style/StringLiterals:
 Style/StringLiteralsInInterpolation:
   Enabled: true
   EnforcedStyle: double_quotes
+
+Style/TrailingCommaInArrayLiteral:
+  Enabled: true
+  EnforcedStyleForMultiline: comma
 
 Style/TrailingCommaInHashLiteral:
   Enabled: true

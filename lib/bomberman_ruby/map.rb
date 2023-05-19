@@ -9,6 +9,16 @@ module BombermanRuby
     }.freeze
     MAP_BACKGROUNDS = Gosu::Image.load_tiles("#{__dir__}/../../assets/images/maps.png", 240, 160).freeze
     VERTICAL_MARGIN = 8
+    DESERIALIZABLE_CLASSES = [
+      "BombermanRuby::Player",
+      "BombermanRuby::SoftBlock",
+      "BombermanRuby::Bomb",
+      "BombermanRuby::Fire",
+      "BombermanRuby::BombUp",
+      "BombermanRuby::FireUp",
+      "BombermanRuby::SpeedUp",
+      "BombermanRuby::Skull",
+    ].freeze
 
     attr_accessor :entities, :players
 
@@ -23,8 +33,13 @@ module BombermanRuby
     end
 
     def update
-      @players.each(&:update)
-      @entities.each(&:update)
+      if @game.is_a?(HostGame)
+        @players.each(&:update)
+        @entities.each(&:update)
+        send_map
+      else
+        read_map
+      end
     end
 
     def draw
@@ -34,6 +49,37 @@ module BombermanRuby
     end
 
     private
+
+    def read_map
+      return unless (msg = last_socket_msg)
+
+      entities = MessagePack.unpack(Zlib::Inflate.inflate(msg))
+      @entities = []
+      @players = []
+      entities.each do |e|
+        @entities << Object.const_get(e["class"]).deserialize(self, e) if DESERIALIZABLE_CLASSES.include?(e["class"])
+      end
+    end
+
+    def last_socket_msg
+      msg = nil
+      begin
+        loop do
+          msg, = @game.socket.recvfrom_nonblock(10_000)
+        end
+      rescue IO::EAGAINWaitReadable
+        # Do nothing
+      end
+      msg
+    end
+
+    def send_map
+      @game.client_sockets.each do |_k, s|
+        map_entities = (@entities.map(&:serialize) + @players.map(&:serialize)).to_msgpack
+        compressed_map_entities = Zlib::Deflate.deflate(map_entities)
+        @game.socket.send(compressed_map_entities, 0, s[:ip], s[:port])
+      end
+    end
 
     def load!
       lines = File.read(@map_path).split("\n").map(&:chars)

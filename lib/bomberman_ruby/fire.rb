@@ -16,11 +16,25 @@ module BombermanRuby
       bottom: FIRE_SPRITES[7],
     }.freeze
 
+    attr_writer :type
+
     def initialize(args)
       @type = args.delete(:type)
       super(**args)
       @y += Map::VERTICAL_MARGIN
       @exploded_at = Gosu.milliseconds
+    end
+
+    def serialize
+      super.merge({
+                    type: @type,
+                  })
+    end
+
+    def self.deserialize(map, data)
+      entity = super
+      entity.type = data["type"].to_sym
+      entity
     end
 
     def update

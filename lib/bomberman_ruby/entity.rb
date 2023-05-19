@@ -36,6 +36,21 @@ module BombermanRuby
       self.class.coord_to_grid_coord(@x, @y)
     end
 
+    def serialize
+      {
+        class: self.class.to_s,
+        x: @x,
+        y: @y,
+      }
+    end
+
+    def self.deserialize(map, data)
+      entity = new(grid_x: 0, grid_y: 0, map:)
+      entity.x = data["x"]
+      entity.y = data["y"]
+      entity
+    end
+
     private
 
     def grid_collide?(other_entity, target_grid_x, target_grid_y)

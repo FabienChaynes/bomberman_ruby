@@ -25,7 +25,7 @@ module BombermanRuby
       Gosu::Color.new(0xff_333333),
       Gosu::Color.new(0xff_666666),
       Gosu::Color.new(0xff_999999),
-      Gosu::Color.new(0xff_cccccc)
+      Gosu::Color.new(0xff_cccccc),
     ].freeze
     ITEM_METHOD_MAPPING = {
       BombermanRuby::BombUp => :increase_bomb_capacity!,
@@ -34,7 +34,8 @@ module BombermanRuby
       BombermanRuby::Skull => :trigger_skull_effect!,
     }.freeze
 
-    attr_reader :skull_effect
+    attr_accessor :skull_effect
+    attr_writer :direction, :moving
 
     def initialize(args)
       @input = args.delete(:input)
@@ -47,6 +48,25 @@ module BombermanRuby
       @speed = 1
       @skull_effect = nil
       @skull_effect_started_at = nil
+    end
+
+    def serialize
+      super.merge({
+                    id: @id,
+                    direction: @direction,
+                    moving: @moving,
+                    skull_effect: @skull_effect,
+                  })
+    end
+
+    def self.deserialize(map, data)
+      entity = new(grid_x: 0, grid_y: 0, map:, id: data["id"])
+      entity.x = data["x"]
+      entity.y = data["y"]
+      entity.moving = data["moving"]
+      entity.skull_effect = data["skull_effect"]
+      entity.direction = data["direction"].to_sym
+      entity
     end
 
     def update

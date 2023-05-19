@@ -12,22 +12,22 @@ module BombermanRuby
                            end
       inputs_config = YAML.load(inputs_config_file)
       @inputs = build_inputs_from_config(inputs_config)
-      @map = Map.new(game: self)
+      @map = nil
     end
 
     def update
-      @map.update
+      @map&.update
     end
 
     def draw
-      @map.draw
+      @map&.draw
     end
 
     private
 
     def build_inputs_from_config(inputs_config)
       inputs_config.map do |_id, input_config|
-        Input.new(
+        LocalInput.new(
           up: constantize_input_config(input_config, "up"),
           down: constantize_input_config(input_config, "down"),
           left: constantize_input_config(input_config, "left"),

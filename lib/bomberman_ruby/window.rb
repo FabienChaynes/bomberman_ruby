@@ -9,7 +9,7 @@ module BombermanRuby
 
     def initialize
       super((WIDTH * INITIAL_SCALING_FACTOR).round, (HEIGHT * INITIAL_SCALING_FACTOR).round)
-      @game = Game.new
+      @game = ARGV[0] ? ClientGame.new : HostGame.new
     end
 
     def update

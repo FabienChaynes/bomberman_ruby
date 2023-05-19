@@ -1,12 +1,19 @@
 # frozen_string_literal: true
 
 require "gosu"
+require "msgpack"
+require "socket"
 require "yaml"
+require "zlib"
 
 require_relative "bomberman_ruby/version"
 require_relative "bomberman_ruby/window"
 require_relative "bomberman_ruby/game"
+require_relative "bomberman_ruby/host_game"
+require_relative "bomberman_ruby/client_game"
 require_relative "bomberman_ruby/input"
+require_relative "bomberman_ruby/local_input"
+require_relative "bomberman_ruby/network_input"
 require_relative "bomberman_ruby/starting_position"
 require_relative "bomberman_ruby/entity"
 require_relative "bomberman_ruby/blockable"
