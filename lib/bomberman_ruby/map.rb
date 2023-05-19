@@ -19,6 +19,12 @@ module BombermanRuby
       "BombermanRuby::SpeedUp",
       "BombermanRuby::Skull",
     ].freeze
+    CONFIG_ITEM_MAPPING = {
+      "bomb_ups" => :bomb_up,
+      "fire_ups" => :fire_up,
+      "speed_ups" => :speed_up,
+      "skulls" => :skull,
+    }.freeze
 
     attr_accessor :entities, :players
 
@@ -26,10 +32,11 @@ module BombermanRuby
       @game = game
       @map_background = MAP_BACKGROUNDS[0]
       @map_path = "#{__dir__}/../../assets/maps/1.txt"
+      @map_config_path = "#{__dir__}/../../assets/maps/1.yml"
       @entities = []
       @players = []
       @starting_positions = {}
-      load!
+      load! if @game.is_a?(HostGame)
     end
 
     def update
@@ -93,12 +100,22 @@ module BombermanRuby
       load_players!
     end
 
+    def config
+      @config ||= YAML.load(File.read(@map_config_path))
+    end
+
+    def delete_extra_soft_blocks!
+      shuffled_soft_blocks = @entities.select { |e| e.is_a?(SoftBlock) }.shuffle
+      shuffled_soft_blocks.pop(config["soft_blocks"])
+      @entities.delete_if { |e| shuffled_soft_blocks.include?(e) }
+    end
+
     def load_items!
-      soft_blocks = @entities.select { |e| e.is_a?(SoftBlock) }.shuffle
-      8.times { soft_blocks.pop.item = :bomb_up }
-      8.times { soft_blocks.pop.item = :fire_up }
-      4.times { soft_blocks.pop.item = :speed_up }
-      soft_blocks.pop.item = :skull
+      delete_extra_soft_blocks!
+      shuffled_soft_blocks = @entities.select { |e| e.is_a?(SoftBlock) }.shuffle
+      CONFIG_ITEM_MAPPING.each do |config_key, item|
+        config[config_key].times { shuffled_soft_blocks.pop.item = item }
+      end
     end
 
     def load_players!
