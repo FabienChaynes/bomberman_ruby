@@ -9,7 +9,7 @@ module BombermanRuby
     def self.coord_to_grid_coord(x, y)
       {
         x: x.to_i / Window::SPRITE_SIZE,
-        y: (y.to_i - Map::VERTICAL_MARGIN) / Window::SPRITE_SIZE,
+        y: y.to_i / Window::SPRITE_SIZE,
       }
     end
 
@@ -58,7 +58,6 @@ module BombermanRuby
     end
 
     def collide?(other_entity, target_x, target_y) # rubocop:disable Metrics/AbcSize
-      return true if target_y + hitbox[:up] < Map::VERTICAL_MARGIN
       return false if target_x + hitbox[:right] <= other_entity.x + other_entity.hitbox[:left]
       return false if target_x + hitbox[:left] >= other_entity.x + other_entity.hitbox[:right]
       return false if target_y + hitbox[:down] <= other_entity.y + other_entity.hitbox[:up]

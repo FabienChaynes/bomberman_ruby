@@ -21,7 +21,6 @@ module BombermanRuby
     def initialize(args)
       @type = args.delete(:type)
       super(**args)
-      @y += Map::VERTICAL_MARGIN
       @exploded_at = Gosu.milliseconds
     end
 

@@ -51,8 +51,10 @@ module BombermanRuby
 
     def draw
       @map_background.draw(0, 0, BACKGROUND_Z)
-      @entities.each(&:draw)
-      @players.each(&:draw)
+      Gosu.translate(0, VERTICAL_MARGIN - Window::SPRITE_SIZE) do
+        @entities.each(&:draw)
+        @players.each(&:draw)
+      end
     end
 
     private

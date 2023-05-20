@@ -41,13 +41,13 @@ module BombermanRuby
       @input = args.delete(:input)
       @id = args.delete(:id)
       super(**args)
+      @y = (args[:grid_y] * Window::SPRITE_SIZE) - (hitbox[:down] - Window::SPRITE_SIZE)
       @direction = :down
       @moving = false
       @bomb_capacity = 1
       @bomb_radius = 1
       @speed = 1
-      @skull_effect = nil
-      @skull_effect_started_at = nil
+      @skull_effect = @skull_effect_started_at = nil
     end
 
     def serialize

@@ -10,10 +10,5 @@ module BombermanRuby
       Window::SPRITE_SIZE,
       Window::SPRITE_SIZE
     ).freeze
-
-    def initialize(args)
-      super(**args)
-      @y += Map::VERTICAL_MARGIN
-    end
   end
 end

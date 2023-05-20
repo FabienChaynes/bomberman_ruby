@@ -28,7 +28,6 @@ module BombermanRuby
     def initialize(args)
       @player = args.delete(:player)
       super(**args)
-      @y += Map::VERTICAL_MARGIN
       @dropped_at = Gosu.milliseconds
     end
 
