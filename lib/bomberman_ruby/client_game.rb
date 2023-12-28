@@ -4,7 +4,7 @@ module BombermanRuby
   class ClientGame < Game
     attr_reader :socket
 
-    def initialize
+    def initialize(_)
       super
       initialize_socket
     end
@@ -27,7 +27,7 @@ module BombermanRuby
 
     def initialize_socket
       @socket = UDPSocket.new(Socket::AF_INET6)
-      @socket.connect(ARGV[0], HostGame::DEFAULT_PORT)
+      @socket.connect(@options[:server_ip], @options[:server_port])
       @inputs.each do |input|
         connect_input(input)
       end

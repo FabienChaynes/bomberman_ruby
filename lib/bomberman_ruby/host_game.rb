@@ -7,7 +7,7 @@ module BombermanRuby
     attr_reader :socket, :client_sockets
     attr_writer :step
 
-    def initialize
+    def initialize(_)
       super
       initialize_socket
     end
@@ -21,7 +21,7 @@ module BombermanRuby
 
     def initialize_socket
       @socket = UDPSocket.new(Socket::AF_INET6)
-      @socket.bind("::", DEFAULT_PORT)
+      @socket.bind("::", @options[:server_port])
       @client_sockets = {}
     end
 

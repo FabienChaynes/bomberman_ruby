@@ -2,6 +2,7 @@
 
 require "gosu"
 require "msgpack"
+require "optparse"
 require "socket"
 require "yaml"
 require "zlib"
@@ -36,7 +37,46 @@ require_relative "bomberman_ruby/map"
 module BombermanRuby
   class Error < StandardError; end
 
-  def self.start
-    BombermanRuby::Window.new.show
+  class << self
+    def start
+      options = parse_options
+      BombermanRuby::Window.new(options).show
+    end
+
+    private
+
+    def parse_options # rubocop:disable Metrics/MethodLength
+      options = {
+        server_port: HostGame::DEFAULT_PORT,
+      }
+      OptionParser.new do |opts|
+        opts.banner = "Usage: bomberman [options]"
+
+        opts.on(
+          "-sIP",
+          "--server-ip IP",
+          String,
+          "Server IP to connect to. If not provided, the game will be hosted on this machine."
+        ) do |s|
+          options[:server_ip] = s
+        end
+        opts.on("-pPORT", "--server-port PORT", Integer, "Server port (default: #{HostGame::DEFAULT_PORT})") do |port|
+          options[:server_port] = port
+        end
+        opts.on(
+          "-cPATH",
+          "--config-file PATH",
+          String,
+          'Config file path (default: "config/inputs.yml" then "config/inputs.yml.example")'
+        ) do |c|
+          options[:config_file] = c
+        end
+        opts.on("-nCOUNT", "--player-number COUNT", Integer, "Number of local players") do |n|
+          options[:player_number] = n
+        end
+      end.parse!
+
+      options
+    end
   end
 end

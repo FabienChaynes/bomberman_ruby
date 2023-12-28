@@ -7,9 +7,9 @@ module BombermanRuby
     SPRITE_SIZE = 16
     INITIAL_SCALING_FACTOR = 3
 
-    def initialize
+    def initialize(options)
       super((WIDTH * INITIAL_SCALING_FACTOR).round, (HEIGHT * INITIAL_SCALING_FACTOR).round)
-      @game = ARGV[0] ? ClientGame.new : HostGame.new
+      @game = options[:server_ip] ? ClientGame.new(options) : HostGame.new(options)
     end
 
     def update
