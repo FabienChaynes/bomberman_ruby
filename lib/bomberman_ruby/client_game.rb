@@ -7,7 +7,6 @@ module BombermanRuby
     def initialize
       super
       initialize_socket
-      @map = Map.new(game: self)
     end
 
     def update

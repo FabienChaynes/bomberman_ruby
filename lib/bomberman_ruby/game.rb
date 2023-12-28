@@ -2,6 +2,7 @@
 
 module BombermanRuby
   class Game
+    attr_accessor :step
     attr_reader :inputs
 
     def initialize
@@ -12,15 +13,15 @@ module BombermanRuby
                            end
       inputs_config = YAML.load(inputs_config_file)
       @inputs = build_inputs_from_config(inputs_config)
-      @map = nil
+      @step = Menu.new(game: self)
     end
 
     def update
-      @map&.update
+      @step&.update
     end
 
     def draw
-      @map&.draw
+      @step&.draw
     end
 
     private
@@ -32,7 +33,8 @@ module BombermanRuby
           down: constantize_input_config(input_config, "down"),
           left: constantize_input_config(input_config, "left"),
           right: constantize_input_config(input_config, "right"),
-          bomb: constantize_input_config(input_config, "bomb")
+          bomb: constantize_input_config(input_config, "bomb"),
+          start: constantize_input_config(input_config, "start")
         )
       end
     end

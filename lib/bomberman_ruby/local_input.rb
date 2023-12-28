@@ -11,14 +11,19 @@ module BombermanRuby
 
     attr_accessor :host_input_id
 
-    def initialize(down:, up:, left:, right:, bomb:)
+    def initialize(down:, up:, left:, right:, bomb:, start:) # rubocop:disable Metrics/ParameterLists:
       super()
       @down_buttons = down
       @up_buttons = up
       @left_buttons = left
       @right_buttons = right
       @bomb_buttons = bomb
+      @start_buttons = start
       @host_input_id = nil
+    end
+
+    def self.deserialize(_data)
+      new(down: nil, up: nil, left: nil, right: nil, bomb: nil, start: nil)
     end
 
     def bitfield
@@ -49,6 +54,10 @@ module BombermanRuby
 
     def bomb?
       @bomb_buttons.any? { |b| Gosu.button_down?(b) }
+    end
+
+    def start?
+      @start_buttons.any? { |b| Gosu.button_down?(b) }
     end
   end
 end

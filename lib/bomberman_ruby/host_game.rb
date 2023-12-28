@@ -5,6 +5,7 @@ module BombermanRuby
     DEFAULT_PORT = 64_177
 
     attr_reader :socket, :client_sockets
+    attr_writer :step
 
     def initialize
       super
@@ -13,7 +14,6 @@ module BombermanRuby
 
     def update
       read_socket
-      @map = Map.new(game: self) if Gosu.button_down?(Gosu::KB_SPACE)
       super
     end
 

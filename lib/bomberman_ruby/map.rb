@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module BombermanRuby
-  class Map
+  class Map < Step
     BACKGROUND_Z = 0
     CHARS_MAPPING = {
       "s" => SoftBlock,
@@ -29,7 +29,7 @@ module BombermanRuby
     attr_accessor :entities, :players
 
     def initialize(game:)
-      @game = game
+      super
       @map_background = MAP_BACKGROUNDS[0]
       @map_path = "#{__dir__}/../../assets/maps/1.txt"
       @map_config_path = "#{__dir__}/../../assets/maps/1.yml"
@@ -71,22 +71,24 @@ module BombermanRuby
     end
 
     def last_socket_msg
-      msg = nil
+      entities = nil
       begin
         loop do
           msg, = @game.socket.recvfrom_nonblock(10_000)
+          instruction, data = msg.unpack("Ca*")
+          entities = data if instruction == 1
         end
       rescue IO::EAGAINWaitReadable
         # Do nothing
       end
-      msg
+      entities
     end
 
     def send_map
+      map_entities = (@entities.map(&:serialize) + @players.map(&:serialize)).to_msgpack
+      compressed_map_entities = Zlib::Deflate.deflate(map_entities)
       @game.client_sockets.each do |_k, s|
-        map_entities = (@entities.map(&:serialize) + @players.map(&:serialize)).to_msgpack
-        compressed_map_entities = Zlib::Deflate.deflate(map_entities)
-        @game.socket.send(compressed_map_entities, 0, s[:ip], s[:port])
+        @game.socket.send([1, compressed_map_entities].pack("Ca*"), 0, s[:ip], s[:port])
       end
     end
 

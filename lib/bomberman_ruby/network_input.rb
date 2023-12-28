@@ -16,6 +16,10 @@ module BombermanRuby
       @inputs_bitfield = LocalInput::NULL_BYTE
     end
 
+    def self.deserialize(_data)
+      new
+    end
+
     def down?
       @inputs_bitfield | DOWN_MASK == FULL_MASK
     end

@@ -29,6 +29,8 @@ require_relative "bomberman_ruby/speed_up"
 require_relative "bomberman_ruby/skull"
 require_relative "bomberman_ruby/player"
 require_relative "bomberman_ruby/soft_block"
+require_relative "bomberman_ruby/step"
+require_relative "bomberman_ruby/menu"
 require_relative "bomberman_ruby/map"
 
 module BombermanRuby
