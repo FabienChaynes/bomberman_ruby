@@ -8,7 +8,7 @@ Lint/EmptyClass:
 
 Metrics/ClassLength:
   Enabled: true
-  Max: 250
+  Max: 350
 
 Naming/MethodParameterName:
   Enabled: true

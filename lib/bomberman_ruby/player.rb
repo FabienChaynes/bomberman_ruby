@@ -33,9 +33,11 @@ module BombermanRuby
       BombermanRuby::SpeedUp => :increase_speed!,
       BombermanRuby::Skull => :trigger_skull_effect!,
     }.freeze
+    ITEM_SAMPLE = Gosu::Sample.new("#{__dir__}/../../assets/sound/item.wav").freeze
+    DROPPED_BOMB_SAMPLE = Gosu::Sample.new("#{__dir__}/../../assets/sound/bomb_dropped.wav").freeze
 
     attr_accessor :skull_effect
-    attr_writer :direction, :moving
+    attr_writer :direction, :moving, :sound
 
     def initialize(args)
       @input = args.delete(:input)
@@ -47,7 +49,6 @@ module BombermanRuby
       @bomb_capacity = 1
       @bomb_radius = 1
       @speed = 1
-      @skull_effect = @skull_effect_started_at = nil
     end
 
     def serialize
@@ -56,20 +57,23 @@ module BombermanRuby
                     direction: @direction,
                     moving: @moving,
                     skull_effect: @skull_effect,
+                    sound: @sound,
                   })
     end
 
-    def self.deserialize(map, data)
+    def self.deserialize(map, data) # rubocop:disable Metrics/AbcSize
       entity = new(grid_x: 0, grid_y: 0, map:, id: data["id"])
       entity.x = data["x"]
       entity.y = data["y"]
       entity.moving = data["moving"]
       entity.skull_effect = data["skull_effect"]
+      entity.sound = data["sound"]&.to_sym
       entity.direction = data["direction"].to_sym
       entity
     end
 
     def update
+      reset_sound!
       move!
       check_collisions!
       cancel_skull_effect!
@@ -80,6 +84,7 @@ module BombermanRuby
       scale_x = @direction == :right ? -1 : 1
       draw_x = @direction == :right ? @x + SPRITE_WIDTH : @x
       current_sprite.draw(draw_x, @y, PLAYER_Z, scale_x, 1, sprite_color)
+      play_sound
       # debug_hitbox
     end
 
@@ -248,6 +253,7 @@ module BombermanRuby
 
       send(ITEM_METHOD_MAPPING[item.class])
       @map.entities.delete(item)
+      @sound = :loot_item
     end
 
     def increase_bomb_capacity!
@@ -295,6 +301,20 @@ module BombermanRuby
                 end
 
       @map.entities << Bomb.new(grid_x: center_grid_coord[:x], grid_y: center_grid_coord[:y], map: @map, player: self)
+      @sound = :drop_bomb
+    end
+
+    def reset_sound!
+      @sound = nil
+    end
+
+    def play_sound
+      case @sound
+      when :drop_bomb
+        DROPPED_BOMB_SAMPLE.play
+      when :loot_item
+        ITEM_SAMPLE.play
+      end
     end
   end
 end

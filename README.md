@@ -10,6 +10,8 @@ Mainly built for educational purpose.
 
 Sprites are mainly coming from [The Spriters Resource](https://www.spriters-resource.com/game_boy_advance/bombertourn/).
 
+Sounds are coming from [The Sounds Resource](https://www.sounds-resource.com/game_boy_advance/bombermantournament/sound/8848/) and [KHI](https://downloads.khinsider.com/game-soundtracks/album/bomberman-tournament-gba).
+
 
 ## Dependencies
 

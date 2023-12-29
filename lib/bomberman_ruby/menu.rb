@@ -9,10 +9,12 @@ module BombermanRuby
       "BombermanRuby::LocalInput",
       "BombermanRuby::NetworkInput",
     ].freeze
+    MENU_SONG = Gosu::Song.new("#{__dir__}/../../assets/sound/menu.mp3").freeze
 
     def initialize(game:)
       super
       @inputs = []
+      MENU_SONG.play(true)
     end
 
     def update

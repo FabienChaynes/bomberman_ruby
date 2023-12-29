@@ -25,6 +25,7 @@ module BombermanRuby
       "speed_ups" => :speed_up,
       "skulls" => :skull,
     }.freeze
+    BATTLE_MODE_SONG = Gosu::Song.new("#{__dir__}/../../assets/sound/battle_mode.mp3").freeze
 
     attr_accessor :entities, :players
 
@@ -37,6 +38,7 @@ module BombermanRuby
       @players = []
       @starting_positions = {}
       load! if @game.is_a?(HostGame)
+      BATTLE_MODE_SONG.play(true)
     end
 
     def update

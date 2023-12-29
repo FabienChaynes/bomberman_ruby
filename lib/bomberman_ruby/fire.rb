@@ -2,6 +2,7 @@
 
 module BombermanRuby
   class Fire < Entity
+    EXPLODING_SAMPLE = Gosu::Sample.new("#{__dir__}/../../assets/sound/bomb.wav").freeze
     EXPLOSION_DURATION_MS = 500
     FIRE_SPRITES = Bomb::SPRITES[3..10]
     FIRE_SPRITES_MAPPING = {
@@ -16,27 +17,31 @@ module BombermanRuby
       bottom: FIRE_SPRITES[7],
     }.freeze
 
-    attr_writer :type
+    attr_writer :type, :sound
 
     def initialize(args)
       @type = args.delete(:type)
       super(**args)
       @exploded_at = Gosu.milliseconds
+      @sound = :initial
     end
 
     def serialize
       super.merge({
                     type: @type,
+                    sound: @sound,
                   })
     end
 
     def self.deserialize(map, data)
       entity = super
       entity.type = data["type"].to_sym
+      entity.sound = data["sound"]&.to_sym
       entity
     end
 
     def update
+      @sound = @sound == :initial ? :exploding : nil
       return if Gosu.milliseconds < @exploded_at + EXPLOSION_DURATION_MS
 
       @map.entities.delete(self)
@@ -44,12 +49,20 @@ module BombermanRuby
 
     def draw
       sprite.draw(@x, @y, Bomb::BOMB_Z)
+      play_sound
     end
 
     private
 
     def sprite
       FIRE_SPRITES_MAPPING[@type]
+    end
+
+    def play_sound
+      case @sound
+      when :exploding
+        EXPLODING_SAMPLE.play
+      end
     end
   end
 end
