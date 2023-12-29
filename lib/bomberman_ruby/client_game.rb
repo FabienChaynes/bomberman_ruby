@@ -18,10 +18,7 @@ module BombermanRuby
 
     def send_inputs
       @inputs.each do |input|
-        inputs_bitfield = input.bitfield
-        next if inputs_bitfield == LocalInput::NULL_BYTE
-
-        @socket.send([input.host_input_id, inputs_bitfield].pack("C2"), 0)
+        @socket.send([input.host_input_id, input.bitfield].pack("C2"), 0)
       end
     end
 

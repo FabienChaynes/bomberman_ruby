@@ -26,14 +26,11 @@ module BombermanRuby
     end
 
     def read_socket
-      @inputs.select { |i| i.is_a?(NetworkInput) }.each { |i| i.inputs_bitfield = LocalInput::NULL_BYTE }
-      begin
-        loop do
-          read_next_msg
-        end
-      rescue IO::EAGAINWaitReadable
-        # Do nothing
+      loop do
+        read_next_msg
       end
+    rescue IO::EAGAINWaitReadable
+      # Do nothing
     end
 
     def read_next_msg
