@@ -3,6 +3,7 @@
 module BombermanRuby
   class Player < Entity
     PLAYER_Z = 10
+
     SPRITE_COUNT = 10
     SPRITE_WIDTH = 15
     SPRITE_HEIGHT = 24
@@ -11,9 +12,22 @@ module BombermanRuby
       SPRITE_WIDTH,
       SPRITE_HEIGHT
     ).freeze
-    WALKING_DOWN_SPRITES = [0, 1, 0, 2].freeze
-    WALKING_LEFT_SPRITES = [3, 4, 3, 5].freeze
-    WALKING_UP_SPRITES = [6, 7, 6, 8].freeze
+
+    DEATH_SPRITE_COUNT = 4
+    DEATH_SPRITE_WIDTH = 23
+    DEATH_SPRITE_HEIGHT = 20
+    DEATH_SPRITES = Gosu::Image.load_tiles(
+      "#{__dir__}/../../assets/images/dead_player.png",
+      DEATH_SPRITE_WIDTH,
+      DEATH_SPRITE_HEIGHT
+    ).freeze
+
+    WALKING_DOWN_SPRITE_INDEXES = [0, 1, 0, 2].freeze
+    WALKING_LEFT_SPRITE_INDEXES = [3, 4, 3, 5].freeze
+    WALKING_UP_SPRITE_INDEXES = [6, 7, 6, 8].freeze
+    WINNING_SPRITE_INDEXES = [0, 9].freeze
+    DEATH_SPRITE_INDEXES = [0, 1, 2, 3].freeze
+
     MAX_BOMB_CAPACITY = 5
     MAX_BOMB_RADIUS = 9
     SKULL_EFFECT_DURATION_MS = 10_000
@@ -35,9 +49,11 @@ module BombermanRuby
     }.freeze
     ITEM_SAMPLE = Gosu::Sample.new("#{__dir__}/../../assets/sound/item.wav").freeze
     DROPPED_BOMB_SAMPLE = Gosu::Sample.new("#{__dir__}/../../assets/sound/bomb_dropped.wav").freeze
+    ROUND_VICTORY_SAMPLE = Gosu::Sample.new("#{__dir__}/../../assets/sound/round_victory.wav").freeze
+    DEATH_DURATION_MS = SPRITE_REFRESH_RATE * DEATH_SPRITE_COUNT
 
     attr_accessor :skull_effect
-    attr_writer :direction, :moving, :sound
+    attr_writer :direction, :moving, :sound, :winning, :dead_at, :current_death_sprite
 
     def initialize(args)
       @input = args.delete(:input)
@@ -45,10 +61,11 @@ module BombermanRuby
       super(**args)
       @y = (args[:grid_y] * Window::SPRITE_SIZE) - (hitbox[:down] - Window::SPRITE_SIZE)
       @direction = :down
-      @moving = false
+      @moving = @winning = false
       @bomb_capacity = 1
       @bomb_radius = 1
       @speed = 1
+      @current_death_sprite = 0
     end
 
     def serialize
@@ -58,15 +75,21 @@ module BombermanRuby
                     moving: @moving,
                     skull_effect: @skull_effect,
                     sound: @sound,
+                    winning: @winning,
+                    dead_at: @dead_at,
+                    current_death_sprite: @current_death_sprite,
                   })
     end
 
-    def self.deserialize(map, data) # rubocop:disable Metrics/AbcSize
+    def self.deserialize(map, data) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       entity = new(grid_x: 0, grid_y: 0, map:, id: data["id"])
       entity.x = data["x"]
       entity.y = data["y"]
       entity.moving = data["moving"]
+      entity.winning = data["winning"]
       entity.skull_effect = data["skull_effect"]
+      entity.dead_at = data["dead_at"]
+      entity.current_death_sprite = data["current_death_sprite"]
       entity.sound = data["sound"]&.to_sym
       entity.direction = data["direction"].to_sym
       entity
@@ -74,16 +97,27 @@ module BombermanRuby
 
     def update
       reset_sound!
+      set_death_sprite if dead?
+      return if @winning || dead?
+
       move!
       check_collisions!
       cancel_skull_effect!
       execute_actions!
     end
 
-    def draw
-      scale_x = @direction == :right ? -1 : 1
-      draw_x = @direction == :right ? @x + SPRITE_WIDTH : @x
-      current_sprite.draw(draw_x, @y, PLAYER_Z, scale_x, 1, sprite_color)
+    def draw # rubocop:disable Metrics/MethodLength
+      scale_x = 1
+      draw_x = @x
+      draw_y = @y
+      if dead?
+        draw_x -= (DEATH_SPRITE_WIDTH - SPRITE_WIDTH) / 2
+        draw_y -= (DEATH_SPRITE_HEIGHT - SPRITE_HEIGHT) / 2
+      elsif @direction == :right
+        scale_x = -1
+        draw_x += SPRITE_WIDTH
+      end
+      current_sprite.draw(draw_x, draw_y, PLAYER_Z, scale_x, 1, sprite_color)
       play_sound
       # debug_hitbox
     end
@@ -104,6 +138,14 @@ module BombermanRuby
       else
         @bomb_radius
       end
+    end
+
+    def dead?
+      !!@dead_at
+    end
+
+    def deletable?
+      @dead_at && Gosu.milliseconds > @dead_at + DEATH_DURATION_MS
     end
 
     private
@@ -129,27 +171,53 @@ module BombermanRuby
     end
 
     def walking_down_sprites
-      @walking_down_sprites ||= WALKING_DOWN_SPRITES.map { |i| SPRITES[(@id * SPRITE_COUNT) + i] }
+      @walking_down_sprites ||= WALKING_DOWN_SPRITE_INDEXES.map { |i| SPRITES[(@id * SPRITE_COUNT) + i] }
     end
 
     def walking_up_sprites
-      @walking_up_sprites ||= WALKING_UP_SPRITES.map { |i| SPRITES[(@id * SPRITE_COUNT) + i] }
+      @walking_up_sprites ||= WALKING_UP_SPRITE_INDEXES.map { |i| SPRITES[(@id * SPRITE_COUNT) + i] }
     end
 
     def walking_left_sprites
-      @walking_left_sprites ||= WALKING_LEFT_SPRITES.map { |i| SPRITES[(@id * SPRITE_COUNT) + i] }
+      @walking_left_sprites ||= WALKING_LEFT_SPRITE_INDEXES.map { |i| SPRITES[(@id * SPRITE_COUNT) + i] }
+    end
+
+    def winning_sprites
+      @winning_sprites ||= WINNING_SPRITE_INDEXES.map { |i| SPRITES[(@id * SPRITE_COUNT) + i] }
+    end
+
+    def death_sprites
+      @death_sprites ||= DEATH_SPRITE_INDEXES.map { |i| DEATH_SPRITES[(@id * DEATH_SPRITE_COUNT) + i] }
+    end
+
+    def current_death_sprite
+      death_sprites[@current_death_sprite]
+    end
+
+    def walking_sprites
+      case @direction
+      when :down
+        walking_down_sprites
+      when :up
+        walking_up_sprites
+      when :left, :right
+        walking_left_sprites
+      end
     end
 
     def current_sprite
-      sprites = case @direction
-                when :down
-                  walking_down_sprites
-                when :up
-                  walking_up_sprites
-                when :left, :right
-                  walking_left_sprites
-                end
-      @moving ? sprites[(Gosu.milliseconds / SPRITE_REFRESH_RATE) % sprites.size] : sprites.first
+      return current_death_sprite if dead?
+
+      sprites = @winning ? winning_sprites : walking_sprites
+      if @moving || @winning
+        sprites[(Gosu.milliseconds / SPRITE_REFRESH_RATE) % sprites.size]
+      else
+        sprites.first
+      end
+    end
+
+    def set_death_sprite
+      @current_death_sprite = ((Gosu.milliseconds - @dead_at) / SPRITE_REFRESH_RATE).clamp(0, death_sprites.size - 1)
     end
 
     def sprite_color
@@ -276,7 +344,7 @@ module BombermanRuby
     def fire_collisions!
       return unless @map.entities.any? { |e| e.is_a?(Fire) && collide?(e, @x, @y) }
 
-      @map.players.delete(self)
+      @dead_at = Gosu.milliseconds
     end
 
     def cancel_skull_effect!
@@ -314,6 +382,8 @@ module BombermanRuby
         DROPPED_BOMB_SAMPLE.play
       when :loot_item
         ITEM_SAMPLE.play
+      when :winning
+        ROUND_VICTORY_SAMPLE.play
       end
     end
   end

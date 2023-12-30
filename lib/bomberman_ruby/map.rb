@@ -26,6 +26,7 @@ module BombermanRuby
       "skulls" => :skull,
     }.freeze
     BATTLE_MODE_SONG = Gosu::Song.new("#{__dir__}/../../assets/sound/battle_mode.mp3").freeze
+    END_ROUND_DURATION_MS = 4_000
 
     attr_accessor :entities, :players
 
@@ -44,7 +45,9 @@ module BombermanRuby
     def update
       if @game.is_a?(HostGame)
         @players.each(&:update)
+        @players.delete_if(&:deletable?)
         @entities.each(&:update)
+        check_end_round
         send_map
       else
         read_map
@@ -72,12 +75,17 @@ module BombermanRuby
       end
     end
 
+    def read_socket
+      msg, = @game.socket.recvfrom_nonblock(10_000)
+      msg.unpack("Ca*")
+    end
+
     def last_socket_msg
       entities = nil
       begin
         loop do
-          msg, = @game.socket.recvfrom_nonblock(10_000)
-          instruction, data = msg.unpack("Ca*")
+          instruction, data = read_socket
+          @game.step = Menu.new(game: @game) if [instruction, data] == [0, "0"]
           entities = data if instruction == 1
         end
       rescue IO::EAGAINWaitReadable
@@ -135,6 +143,29 @@ module BombermanRuby
           input: @game.inputs[i],
           id: i
         )
+      end
+    end
+
+    def end_round(winning_player)
+      return if @ended_at
+
+      @ended_at = Gosu.milliseconds
+      return unless winning_player
+
+      winning_player.winning = true
+      winning_player.sound = :winning
+    end
+
+    def check_end_round
+      alive_players = @players.reject(&:dead?)
+      return unless alive_players.count <= 1
+
+      end_round(alive_players.first)
+      return if Gosu.milliseconds < @ended_at + END_ROUND_DURATION_MS
+
+      @game.step = Menu.new(game: @game)
+      @game.client_sockets.each do |_k, s|
+        @game.socket.send([0, "0"].pack("CA"), 0, s[:ip], s[:port])
       end
     end
   end
