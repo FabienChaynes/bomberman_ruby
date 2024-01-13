@@ -42,6 +42,7 @@ module BombermanRuby
 
     def update
       @sound = @sound == :initial ? :exploding : nil
+      burn_colliding_bombs
       return if Gosu.milliseconds < @exploded_at + EXPLOSION_DURATION_MS
 
       @map.entities.delete(self)
@@ -53,6 +54,12 @@ module BombermanRuby
     end
 
     private
+
+    def burn_colliding_bombs
+      colliding_entities(@x, @y)
+        .select { |e| e.is_a?(Bomb) }
+        .each(&:burn!)
+    end
 
     def sprite
       FIRE_SPRITES_MAPPING[@type]

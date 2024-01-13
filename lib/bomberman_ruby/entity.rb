@@ -13,6 +13,13 @@ module BombermanRuby
       }
     end
 
+    def self.grid_coord_to_coord(x, y)
+      {
+        x: x.to_i * Window::SPRITE_SIZE,
+        y: y.to_i * Window::SPRITE_SIZE,
+      }
+    end
+
     def initialize(grid_x:, grid_y:, map:)
       @x = grid_x * Window::SPRITE_SIZE
       @y = grid_y * Window::SPRITE_SIZE
@@ -22,6 +29,8 @@ module BombermanRuby
     def update; end
 
     def draw; end
+
+    def bounced_on; end
 
     def hitbox
       {
@@ -51,6 +60,12 @@ module BombermanRuby
       entity
     end
 
+    def move_to_center!
+      coords = self.class.grid_coord_to_coord(center_grid_coord[:x], center_grid_coord[:y])
+      @x = coords[:x]
+      @y = coords[:y]
+    end
+
     private
 
     def grid_collide?(other_entity, target_grid_x, target_grid_y)
@@ -64,6 +79,14 @@ module BombermanRuby
       return false if target_y + hitbox[:up] >= other_entity.y + other_entity.hitbox[:down]
 
       true
+    end
+
+    def colliding_entities(target_x, target_y)
+      @map.entities.select do |entity|
+        next unless entity.is_a?(Blockable)
+
+        collide?(entity, target_x, target_y)
+      end
     end
 
     def center

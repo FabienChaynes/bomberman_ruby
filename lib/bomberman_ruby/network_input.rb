@@ -8,6 +8,7 @@ module BombermanRuby
     LEFT_MASK = LocalInput::LEFT_BIT ^ FULL_MASK
     RIGHT_MASK = LocalInput::RIGHT_BIT ^ FULL_MASK
     BOMB_MASK = LocalInput::BOMB_BIT ^ FULL_MASK
+    ACTION_MASK = LocalInput::ACTION_BIT ^ FULL_MASK
 
     attr_writer :inputs_bitfield
 
@@ -38,6 +39,10 @@ module BombermanRuby
 
     def bomb?
       @inputs_bitfield | BOMB_MASK == FULL_MASK
+    end
+
+    def action?
+      @inputs_bitfield | ACTION_MASK == FULL_MASK
     end
   end
 end

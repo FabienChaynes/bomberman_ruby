@@ -5,6 +5,16 @@ module BombermanRuby
     attr_accessor :step
     attr_reader :inputs
 
+    INPUT_LIST = %i[
+      up
+      down
+      left
+      right
+      bomb
+      action
+      start
+    ].freeze
+
     def initialize(options)
       @options = options
       inputs_config = YAML.load(inputs_config_file)
@@ -24,14 +34,10 @@ module BombermanRuby
 
     def build_inputs_from_config(inputs_config)
       used_config(inputs_config).map do |_id, input_config|
-        LocalInput.new(
-          up: constantize_input_config(input_config, "up"),
-          down: constantize_input_config(input_config, "down"),
-          left: constantize_input_config(input_config, "left"),
-          right: constantize_input_config(input_config, "right"),
-          bomb: constantize_input_config(input_config, "bomb"),
-          start: constantize_input_config(input_config, "start")
-        )
+        input_params = INPUT_LIST.each_with_object({}) do |i, acc|
+          acc[i] = constantize_input_config(input_config, i.to_s)
+        end
+        LocalInput.new(**input_params)
       end
     end
 

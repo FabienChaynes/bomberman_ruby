@@ -7,7 +7,11 @@ module BombermanRuby
       "s" => SoftBlock,
       "x" => HardBlock,
     }.freeze
-    MAP_BACKGROUNDS = Gosu::Image.load_tiles("#{__dir__}/../../assets/images/maps.png", 240, 160).freeze
+    MAP_BACKGROUNDS = Gosu::Image.load_tiles(
+      "#{__dir__}/../../assets/images/maps.png",
+      Window::WIDTH,
+      Window::HEIGHT
+    ).freeze
     VERTICAL_MARGIN = 8
     DESERIALIZABLE_CLASSES = [
       "BombermanRuby::Player",
@@ -27,14 +31,21 @@ module BombermanRuby
     }.freeze
     BATTLE_MODE_SONG = Gosu::Song.new("#{__dir__}/../../assets/sound/battle_mode.mp3").freeze
     END_ROUND_DURATION_MS = 4_000
+    PLAYER_CONFIG_KEYS = %i[
+      starting_bomb_capacity
+      starting_bomb_radius
+      starting_kick
+      starting_line_bomb
+      starting_speed
+    ].freeze
 
     attr_accessor :entities, :players
 
-    def initialize(game:)
-      super
-      @map_background = MAP_BACKGROUNDS[0]
-      @map_path = "#{__dir__}/../../assets/maps/1.txt"
-      @map_config_path = "#{__dir__}/../../assets/maps/1.yml"
+    def initialize(game:, index:)
+      super(game:)
+      @map_background = MAP_BACKGROUNDS[index]
+      @map_path = "#{__dir__}/../../assets/maps/#{index}.txt"
+      @map_config_path = "#{__dir__}/../../assets/maps/#{index}.yml"
       @entities = []
       @players = []
       @starting_positions = {}
@@ -132,7 +143,7 @@ module BombermanRuby
       end
     end
 
-    def load_players!
+    def load_players! # rubocop:disable Metrics/MethodLength
       @starting_positions.count.times do |i|
         next unless @game.inputs[i]
 
@@ -141,7 +152,8 @@ module BombermanRuby
           grid_y: @starting_positions[i].grid_y,
           map: self,
           input: @game.inputs[i],
-          id: i
+          id: i,
+          **config.transform_keys(&:to_sym).slice(*PLAYER_CONFIG_KEYS)
         )
       end
     end

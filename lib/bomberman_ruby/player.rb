@@ -4,8 +4,8 @@ module BombermanRuby
   class Player < Entity
     PLAYER_Z = 10
 
-    SPRITE_COUNT = 10
-    SPRITE_WIDTH = 15
+    SPRITE_COUNT = 12
+    SPRITE_WIDTH = 17
     SPRITE_HEIGHT = 24
     SPRITES = Gosu::Image.load_tiles(
       "#{__dir__}/../../assets/images/player.png",
@@ -27,10 +27,12 @@ module BombermanRuby
     WALKING_UP_SPRITE_INDEXES = [6, 7, 6, 8].freeze
     WINNING_SPRITE_INDEXES = [0, 9].freeze
     DEATH_SPRITE_INDEXES = [0, 1, 2, 3].freeze
+    STUNNED_SPRITE_INDEXES = [10, 11].freeze
 
     MAX_BOMB_CAPACITY = 5
     MAX_BOMB_RADIUS = 9
     SKULL_EFFECT_DURATION_MS = 10_000
+    STUNNED_DURATION_MS = 1_000
     SKULL_EFFECT_COLORS = [
       Gosu::Color.new(0xff_ffffff),
       Gosu::Color.new(0xff_cccccc),
@@ -53,22 +55,24 @@ module BombermanRuby
     DEATH_DURATION_MS = SPRITE_REFRESH_RATE * DEATH_SPRITE_COUNT
 
     attr_accessor :skull_effect
-    attr_writer :direction, :moving, :sound, :winning, :dead_at, :current_death_sprite
+    attr_writer :direction, :moving, :sound, :winning, :dead_at, :current_death_sprite, :stunned_at
 
-    def initialize(args)
+    def initialize(args) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       @input = args.delete(:input)
       @id = args.delete(:id)
+      @bomb_capacity = args.delete(:starting_bomb_capacity) || 1
+      @bomb_radius = args.delete(:starting_bomb_radius) || 1
+      @speed = args.delete(:starting_speed) || 1
+      @kick = args.delete(:starting_kick) || false
+      @line_bomb = args.delete(:starting_line_bomb) || false
       super(**args)
       @y = (args[:grid_y] * Window::SPRITE_SIZE) - (hitbox[:down] - Window::SPRITE_SIZE)
       @direction = :down
-      @moving = @winning = false
-      @bomb_capacity = 1
-      @bomb_radius = 1
-      @speed = 1
+      @moving = @winning = @bomb_control_released = false
       @current_death_sprite = 0
     end
 
-    def serialize
+    def serialize # rubocop:disable Metrics/MethodLength
       super.merge({
                     id: @id,
                     direction: @direction,
@@ -78,6 +82,7 @@ module BombermanRuby
                     winning: @winning,
                     dead_at: @dead_at,
                     current_death_sprite: @current_death_sprite,
+                    stunned_at: @stunned_at,
                   })
     end
 
@@ -89,6 +94,7 @@ module BombermanRuby
       entity.winning = data["winning"]
       entity.skull_effect = data["skull_effect"]
       entity.dead_at = data["dead_at"]
+      entity.stunned_at = data["stunned_at"]
       entity.current_death_sprite = data["current_death_sprite"]
       entity.sound = data["sound"]&.to_sym
       entity.direction = data["direction"].to_sym
@@ -103,6 +109,7 @@ module BombermanRuby
       move!
       check_collisions!
       cancel_skull_effect!
+      cancel_stun!
       execute_actions!
     end
 
@@ -122,12 +129,16 @@ module BombermanRuby
       # debug_hitbox
     end
 
+    def bounced_on
+      @stunned_at = Gosu.milliseconds
+    end
+
     def hitbox
       {
         up: 14,
         down: 24,
-        left: 1,
-        right: 14,
+        left: 2,
+        right: 15,
       }
     end
 
@@ -190,8 +201,16 @@ module BombermanRuby
       @death_sprites ||= DEATH_SPRITE_INDEXES.map { |i| DEATH_SPRITES[(@id * DEATH_SPRITE_COUNT) + i] }
     end
 
+    def stunned_sprites
+      @stunned_sprites ||= STUNNED_SPRITE_INDEXES.map { |i| SPRITES[(@id * SPRITE_COUNT) + i] }
+    end
+
     def current_death_sprite
       death_sprites[@current_death_sprite]
+    end
+
+    def current_stunned_sprite
+      stunned_sprites[(Gosu.milliseconds / SPRITE_REFRESH_RATE) % stunned_sprites.size]
     end
 
     def walking_sprites
@@ -207,6 +226,7 @@ module BombermanRuby
 
     def current_sprite
       return current_death_sprite if dead?
+      return current_stunned_sprite if stunned?
 
       sprites = @winning ? winning_sprites : walking_sprites
       if @moving || @winning
@@ -228,8 +248,19 @@ module BombermanRuby
       end
     end
 
+    def cancel_stun!
+      return unless @stunned_at && @stunned_at + STUNNED_DURATION_MS < Gosu.milliseconds
+
+      @stunned_at = nil
+    end
+
+    def stunned?
+      !!@stunned_at
+    end
+
     def move!
       @moving = false
+      return if stunned?
 
       move_vertical!
       move_horizontal!
@@ -280,34 +311,51 @@ module BombermanRuby
       end
     end
 
-    def move_vertical!
+    def action_control?
+      @input.action?
+    end
+
+    def kick_bombs(colliding_entity_list)
+      return unless @kick
+
+      colliding_entity_list
+        .select { |e| e.is_a?(Bomb) }
+        .each { |b| b.direction = @direction }
+    end
+
+    def move_vertical! # rubocop:disable Metrics/MethodLength
       y_delta = 0
       y_delta -= speed if up_control?
       y_delta += speed if down_control?
-      return unless y_delta != 0 && can_move_to?(@x, @y + y_delta)
+      return unless y_delta != 0
 
-      @y += y_delta
-      @moving = true
       @direction = y_delta.positive? ? :down : :up
+      if (colliding_entity_list = colliding_entities(@x, @y + y_delta)).any?
+        kick_bombs(colliding_entity_list)
+      else
+        @y += y_delta
+        @moving = true
+      end
     end
 
-    def move_horizontal!
+    def colliding_entities(_target_x, _target_y)
+      super.reject do |e|
+        e.is_a?(Bomb) && collide?(e, @x, @y)
+      end
+    end
+
+    def move_horizontal! # rubocop:disable Metrics/MethodLength
       x_delta = 0
       x_delta -= speed if left_control?
       x_delta += speed if right_control?
-      return unless x_delta != 0 && can_move_to?(@x + x_delta, @y)
+      return unless x_delta != 0
 
-      @x += x_delta
-      @moving = true
       @direction = x_delta.positive? ? :right : :left
-    end
-
-    def can_move_to?(target_x, target_y)
-      @map.entities.none? do |entity|
-        next unless entity.is_a?(Blockable)
-        next if entity.is_a?(Bomb) && collide?(entity, @x, @y)
-
-        collide?(entity, target_x, target_y)
+      if (colliding_entity_list = colliding_entities(@x + x_delta, @y)).any?
+        kick_bombs(colliding_entity_list)
+      else
+        @x += x_delta
+        @moving = true
       end
     end
 
@@ -354,21 +402,100 @@ module BombermanRuby
     end
 
     def execute_actions!
-      drop_bomb! if bomb_control?
+      if bomb_control?
+        drop_bomb!
+      else
+        @bomb_control_released = true
+      end
+      return unless action_control?
+
+      stop_kicked_bombs!
+      punch_bomb!
+    end
+
+    def punch_bomb! # rubocop:disable Metrics/CyclomaticComplexity
+      x_grid_target, y_grid_target = center_grid_coord.values_at(:x, :y)
+      x_grid_target -= 1 if @direction == :left
+      x_grid_target += 1 if @direction == :right
+      y_grid_target -= 1 if @direction == :up
+      y_grid_target += 1 if @direction == :down
+      @map.entities.each do |e|
+        next unless e.is_a?(Bomb)
+        next unless grid_collide?(e, x_grid_target, y_grid_target)
+
+        e.punch!(@direction)
+      end
+    end
+
+    def stop_kicked_bombs!
+      bombs.each do |b|
+        b.direction = nil
+        b.move_to_center!
+      end
     end
 
     def bomb_capacity_reached?
       @skull_effect == :constipation || @map.entities.count { |e| e.is_a?(Bomb) && e.player == self } >= bomb_capacity
     end
 
+    def increment_position(x, y)
+      y -= 1 if @direction == :up
+      y += 1 if @direction == :down
+      x -= 1 if @direction == :left
+      x += 1 if @direction == :right
+      [x, y]
+    end
+
+    def bombs
+      @map.entities.select do |e|
+        e.is_a?(Bomb) && e.player == self
+      end
+    end
+
+    def add_bomb_to_map(bomb)
+      @map.entities << bomb
+    end
+
+    def drop_nex_bomb_in_line!(grid_x, grid_y)
+      new_bomb = Bomb.new(grid_x:, grid_y:, map: @map, player: self)
+      coords = Entity.grid_coord_to_coord(grid_x, grid_y)
+      colliding_entity_list = new_bomb.colliding_entities(coords[:x], coords[:y])
+      if colliding_entity_list.reject { |e| e == self }.any?
+        return colliding_entity_list.all? { |e| e.is_a?(Bomb) && e.player == self }
+      end
+
+      add_bomb_to_map(new_bomb)
+      true
+    end
+
+    def drop_bomb_line!
+      grid_x, grid_y = center_grid_coord.fetch_values(:x, :y)
+      until bomb_capacity_reached?
+        grid_x, grid_y = increment_position(grid_x, grid_y)
+        break unless drop_nex_bomb_in_line!(grid_x, grid_y)
+      end
+      @sound = :drop_bomb
+    end
+
+    def on_bomb?
+      @map.entities.any? do |e|
+        e.is_a?(Bomb) &&
+          grid_collide?(e, center_grid_coord[:x], center_grid_coord[:y])
+      end
+    end
+
     def drop_bomb!
       return if bomb_capacity_reached?
-      return if @map.entities.any? do |e|
-                  e.is_a?(Bomb) &&
-                  grid_collide?(e, center_grid_coord[:x], center_grid_coord[:y])
-                end
 
-      @map.entities << Bomb.new(grid_x: center_grid_coord[:x], grid_y: center_grid_coord[:y], map: @map, player: self)
+      if on_bomb?
+        return unless @bomb_control_released
+
+        @bomb_control_released = false
+        drop_bomb_line! if @line_bomb
+        return
+      end
+      add_bomb_to_map(Bomb.new(grid_x: center_grid_coord[:x], grid_y: center_grid_coord[:y], map: @map, player: self))
+      @bomb_control_released = false
       @sound = :drop_bomb
     end
 

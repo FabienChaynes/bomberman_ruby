@@ -13,6 +13,8 @@
     - KB_D
   bomb:
     - KB_X
+  action:
+    - KB_Z
   start:
    - KB_SPACE
 1:
@@ -26,5 +28,7 @@
     - GP_0_RIGHT
   bomb:
     - GP_0_BUTTON_0
+  action:
+    - GP_0_BUTTON_1
   start:
    - GP_0_BUTTON_6

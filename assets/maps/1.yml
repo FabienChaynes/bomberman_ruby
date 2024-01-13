@@ -1,5 +1,10 @@
-soft_blocks: 56
-bomb_ups: 8
-fire_ups: 8
-speed_ups: 4
-skulls: 1
+soft_blocks: 0
+bomb_ups: 0
+fire_ups: 0
+speed_ups: 0
+skulls: 0
+starting_bomb_radius: 9
+starting_bomb_capacity: 3
+starting_speed: 1.2
+starting_kick: true
+starting_line_bomb: true
