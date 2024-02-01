@@ -16,7 +16,7 @@
   action:
     - KB_Z
   start:
-   - KB_SPACE
+    - KB_SPACE
 1:
   up:
     - GP_0_UP
@@ -31,4 +31,4 @@
   action:
     - GP_0_BUTTON_1
   start:
-   - GP_0_BUTTON_6
+    - GP_0_BUTTON_6

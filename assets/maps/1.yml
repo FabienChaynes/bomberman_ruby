@@ -7,4 +7,5 @@ starting_bomb_radius: 9
 starting_bomb_capacity: 3
 starting_speed: 1.2
 starting_kick: true
+starting_punch: true
 starting_line_bomb: true

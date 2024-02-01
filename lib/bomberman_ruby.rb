@@ -9,30 +9,47 @@ require "zlib"
 
 require_relative "bomberman_ruby/version"
 require_relative "bomberman_ruby/window"
-require_relative "bomberman_ruby/game"
-require_relative "bomberman_ruby/host_game"
-require_relative "bomberman_ruby/client_game"
-require_relative "bomberman_ruby/input"
-require_relative "bomberman_ruby/local_input"
-require_relative "bomberman_ruby/network_input"
+require_relative "bomberman_ruby/games/base"
+require_relative "bomberman_ruby/games/host"
+require_relative "bomberman_ruby/games/client"
+require_relative "bomberman_ruby/inputs/base"
+require_relative "bomberman_ruby/inputs/local"
+require_relative "bomberman_ruby/inputs/network"
 require_relative "bomberman_ruby/starting_position"
-require_relative "bomberman_ruby/entity"
-require_relative "bomberman_ruby/blockable"
-require_relative "bomberman_ruby/burnable"
-require_relative "bomberman_ruby/block"
-require_relative "bomberman_ruby/hard_block"
-require_relative "bomberman_ruby/bomb"
-require_relative "bomberman_ruby/fire"
-require_relative "bomberman_ruby/item"
-require_relative "bomberman_ruby/bomb_up"
-require_relative "bomberman_ruby/fire_up"
-require_relative "bomberman_ruby/speed_up"
-require_relative "bomberman_ruby/skull"
-require_relative "bomberman_ruby/player"
-require_relative "bomberman_ruby/soft_block"
-require_relative "bomberman_ruby/step"
-require_relative "bomberman_ruby/menu"
-require_relative "bomberman_ruby/map"
+require_relative "bomberman_ruby/entities/concerns/debuggable"
+require_relative "bomberman_ruby/entities/concerns/serializable"
+require_relative "bomberman_ruby/entities/base"
+require_relative "bomberman_ruby/entities/concerns/blockable"
+require_relative "bomberman_ruby/entities/concerns/burnable"
+require_relative "bomberman_ruby/entities/concerns/bomb/throwable"
+require_relative "bomberman_ruby/entities/concerns/bomb/explodeable"
+require_relative "bomberman_ruby/entities/concerns/bomb/kickable"
+require_relative "bomberman_ruby/entities/blocks/base"
+require_relative "bomberman_ruby/entities/blocks/hard"
+require_relative "bomberman_ruby/entities/bomb"
+require_relative "bomberman_ruby/entities/fire"
+require_relative "bomberman_ruby/entities/items/base"
+require_relative "bomberman_ruby/entities/items/bomb_up"
+require_relative "bomberman_ruby/entities/items/fire_up"
+require_relative "bomberman_ruby/entities/items/speed_up"
+require_relative "bomberman_ruby/entities/items/skull"
+require_relative "bomberman_ruby/entities/concerns/player/collisions"
+require_relative "bomberman_ruby/entities/concerns/player/sound"
+require_relative "bomberman_ruby/entities/concerns/player/sprite"
+require_relative "bomberman_ruby/entities/concerns/player/bonus"
+require_relative "bomberman_ruby/entities/concerns/player/movement"
+require_relative "bomberman_ruby/entities/concerns/player/bomb_actions"
+require_relative "bomberman_ruby/entities/player"
+require_relative "bomberman_ruby/entities/blocks/soft"
+require_relative "bomberman_ruby/steps/concerns/hosts/networkable"
+require_relative "bomberman_ruby/steps/concerns/clients/networkable"
+require_relative "bomberman_ruby/steps/base"
+require_relative "bomberman_ruby/steps/menus/base"
+require_relative "bomberman_ruby/steps/menus/host"
+require_relative "bomberman_ruby/steps/menus/client"
+require_relative "bomberman_ruby/steps/maps/base"
+require_relative "bomberman_ruby/steps/maps/host"
+require_relative "bomberman_ruby/steps/maps/client"
 
 module BombermanRuby
   class Error < StandardError; end
@@ -47,7 +64,7 @@ module BombermanRuby
 
     def parse_options # rubocop:disable Metrics/MethodLength
       options = {
-        server_port: HostGame::DEFAULT_PORT,
+        server_port: Games::Host::DEFAULT_PORT,
       }
       OptionParser.new do |opts|
         opts.banner = "Usage: bomberman [options]"
@@ -60,7 +77,8 @@ module BombermanRuby
         ) do |s|
           options[:server_ip] = s
         end
-        opts.on("-pPORT", "--server-port PORT", Integer, "Server port (default: #{HostGame::DEFAULT_PORT})") do |port|
+        opts.on("-pPORT", "--server-port PORT", Integer,
+                "Server port (default: #{Games::Host::DEFAULT_PORT})") do |port|
           options[:server_port] = port
         end
         opts.on(

@@ -1,18 +1,14 @@
+require:
+  - rubocop-performance
+
 AllCops:
   NewCops: enable
-  TargetRubyVersion: 3.1
-
-Lint/EmptyClass:
-  Enabled: true
-  AllowComments: true
-
-Metrics/ClassLength:
-  Enabled: true
-  Max: 500
+  TargetRubyVersion: 3.3
 
 Naming/MethodParameterName:
   Enabled: true
   AllowedNames:
+    - id
     - up
     - x
     - y
@@ -35,6 +31,3 @@ Style/TrailingCommaInArrayLiteral:
 Style/TrailingCommaInHashLiteral:
   Enabled: true
   EnforcedStyleForMultiline: comma
-
-Layout/LineLength:
-  Max: 120

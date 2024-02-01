@@ -9,7 +9,7 @@ module BombermanRuby
 
     def initialize(options)
       super((WIDTH * INITIAL_SCALING_FACTOR).round, (HEIGHT * INITIAL_SCALING_FACTOR).round)
-      @game = options[:server_ip] ? ClientGame.new(options) : HostGame.new(options)
+      @game = options[:server_ip] ? Games::Client.new(options) : Games::Host.new(options)
     end
 
     def update
@@ -21,6 +21,10 @@ module BombermanRuby
       Gosu.scale(scaling_factor, scaling_factor) do
         @game.draw
       end
+    end
+
+    def needs_cursor?
+      false
     end
 
     private
