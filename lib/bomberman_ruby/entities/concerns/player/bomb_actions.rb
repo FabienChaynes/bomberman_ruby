@@ -21,6 +21,7 @@ module BombermanRuby
 
           def kick_bombs(colliding_entity_list)
             return unless @kick
+            return if current_colliding_conveyor
 
             colliding_entity_list
               .select { |e| e.is_a?(Entities::Bomb) }
@@ -109,7 +110,7 @@ module BombermanRuby
           def on_bomb?
             @map.entities.any? do |e|
               e.is_a?(Entities::Bomb) &&
-                e.grid_collide?(center_grid_coord[:x], center_grid_coord[:y])
+                collide?(e)
             end
           end
 

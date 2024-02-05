@@ -5,6 +5,7 @@ module BombermanRuby
     class Bomb < Base
       include Concerns::Blockable
       include Concerns::Burnable
+      include Concerns::ConveyorMovable
       include Concerns::Bomb::Throwable
       include Concerns::Bomb::Explodeable
       include Concerns::Bomb::Kickable
@@ -49,7 +50,7 @@ module BombermanRuby
 
       def colliding_entities(target_x = @x, target_y = @y)
         colliding_players = @map.players.select do |player|
-          collide?(player, target_x, target_y)
+          collide?(player, target_x, target_y) && !collide?(player)
         end
         colliding_entities_list = super
 
@@ -67,11 +68,19 @@ module BombermanRuby
 
       private
 
+      def on_conveyor(conveyor)
+        move_to_center! if colliding_entities(@x + conveyor.x_delta, @y + conveyor.y_delta).any?
+        return unless conveyor.x == @x && conveyor.y == @y
+
+        @direction = nil
+      end
+
       def move!
         if @thrown_step
           thrown_move!
           return
         end
+        conveyor_move!
         kicked_move! if @direction
       end
 

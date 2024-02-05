@@ -8,13 +8,26 @@ module BombermanRuby
 
         BASE_SERIALIZABLE_CLASSES = "BombermanRuby::Entities::"
         DESERIALIZABLE_CLASSES = [
+          "Conveyors::BottomLeft",
+          "Conveyors::BottomRight",
+          "Conveyors::Down",
+          "Conveyors::Left",
+          "Conveyors::Right",
+          "Conveyors::TopLeft",
+          "Conveyors::TopRight",
+          "Conveyors::Up",
           "Bomb",
           "Blocks::Soft",
+          "Buttons::RotationChange",
+          "Buttons::SpeedChange",
           "Fire",
           "Items::BombUp",
           "Items::FireUp",
           "Items::Skull",
           "Items::SpeedUp",
+          "Items::Kick",
+          "Items::Punch",
+          "Items::LineBomb",
           "Player",
         ].freeze
 

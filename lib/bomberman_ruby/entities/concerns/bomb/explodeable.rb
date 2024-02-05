@@ -19,6 +19,11 @@ module BombermanRuby
 
             @map.entities.delete(self)
             @map.entities << Fire.new(grid_x: grid_coord[:x], grid_y: grid_coord[:y], map: @map, type: :middle)
+            burn_entities!(grid_coord[:x], grid_coord[:y])
+            add_fires!
+          end
+
+          def add_fires!
             add_radius_fire!(:left)
             add_radius_fire!(:right)
             add_radius_fire!(:top)

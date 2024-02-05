@@ -27,8 +27,8 @@ module BombermanRuby
           }
         end
 
-        def current_animated_sprite(sprites)
-          sprites[(Gosu.milliseconds / self::SPRITE_REFRESH_RATE) % sprites.size]
+        def current_animated_sprite(sprites, refresh_rate = self::SPRITE_REFRESH_RATE)
+          sprites[(Gosu.milliseconds / refresh_rate) % sprites.size]
         end
       end
 
@@ -58,7 +58,7 @@ module BombermanRuby
       end
 
       def move_to_center!
-        coords = self.class.grid_coord_to_coord(center_grid_coord[:x], center_grid_coord[:y])
+        coords = self.class.grid_coord_to_coord(*center_grid_coord.fetch_values(:x, :y))
         @x = coords[:x]
         @y = coords[:y]
       end

@@ -10,6 +10,9 @@ module BombermanRuby
             Items::FireUp => :increase_bomb_radius!,
             Items::SpeedUp => :increase_speed!,
             Items::Skull => :trigger_skull_effect!,
+            Items::Kick => :enable_kick!,
+            Items::Punch => :enable_punch!,
+            Items::LineBomb => :enable_line_bomb!,
           }.freeze
           MAX_BOMB_CAPACITY = 5
           MAX_BOMB_RADIUS = 9
@@ -48,6 +51,18 @@ module BombermanRuby
             end
 
             @skull_effect = @skull_effect_started_at = nil
+          end
+
+          def enable_kick!
+            @kick = true
+          end
+
+          def enable_punch!
+            @punch = true
+          end
+
+          def enable_line_bomb!
+            @line_bomb = true
           end
         end
       end

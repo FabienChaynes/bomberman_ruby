@@ -6,7 +6,7 @@ module BombermanRuby
       class Base < Entities::Base
         include Concerns::Burnable
 
-        ITEM_Z = 1
+        ITEM_Z = 2
         ASSETS_PATH = "#{__dir__}/../../../../assets".freeze
         ITEMS_SPRITES = Gosu::Image.load_tiles(
           "#{ASSETS_PATH}/images/items.png",

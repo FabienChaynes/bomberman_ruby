@@ -19,7 +19,7 @@ module BombermanRuby
               if step_id == Steps::Base::STEP_IDS[:menu]
                 @game.step = Menus::Client.new(game: @game)
               elsif step_id == Steps::Base::STEP_IDS[:map]
-                @game.step = Maps::Client.new(game: @game, index: sub_step_id.to_i)
+                @game.step = Steps::Maps::Client.new(game: @game, index: sub_step_id.to_i)
               end
             end
             data if instruction == Games::Host::NETWORK_INSTRUCTIONS[:entities]

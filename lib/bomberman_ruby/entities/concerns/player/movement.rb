@@ -5,6 +5,8 @@ module BombermanRuby
     module Concerns
       module Player
         module Movement
+          include Concerns::ConveyorMovable
+
           private
 
           def speed
@@ -20,6 +22,7 @@ module BombermanRuby
 
           def move!
             @moving = false
+            conveyor_move!
             return if stunned?
 
             move_vertical!

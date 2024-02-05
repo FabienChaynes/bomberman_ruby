@@ -13,11 +13,12 @@ module BombermanRuby
         VERTICAL_MARGIN = 8
         BATTLE_MODE_SONG = Gosu::Song.new("#{ASSETS_PATH}/sound/battle_mode.mp3").freeze
 
-        attr_accessor :entities, :players
+        attr_accessor :entities, :players, :index
 
         def initialize(game:, index:)
           super(game:)
-          @map_background = MAP_BACKGROUNDS[index]
+          @index = index
+          @map_background = MAP_BACKGROUNDS[@index]
           @entities = []
           @players = []
           BATTLE_MODE_SONG.play(true)

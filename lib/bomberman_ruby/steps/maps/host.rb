@@ -5,27 +5,9 @@ module BombermanRuby
     module Maps
       class Host < Base
         include Steps::Concerns::Hosts::Networkable
+        include Steps::Concerns::Maps::FileParsing
 
-        CONFIG_ITEM_MAPPING = {
-          "bomb_ups" => :bomb_up,
-          "fire_ups" => :fire_up,
-          "skulls" => :skull,
-          "speed_ups" => :speed_up,
-        }.freeze
-        CHARS_MAPPING = {
-          "s" => Entities::Blocks::Soft,
-          "x" => Entities::Blocks::Hard,
-        }.freeze
-        STARTING_POSITION_CHARS = ("0"..(Games::Base::MAX_PLAYER_COUNT - 1).to_s)
         END_ROUND_DURATION_MS = 4_000
-        PLAYER_CONFIG_KEYS = %i[
-          starting_bomb_capacity
-          starting_bomb_radius
-          starting_kick
-          starting_punch
-          starting_line_bomb
-          starting_speed
-        ].freeze
 
         def initialize(game:, index:)
           super
@@ -44,58 +26,6 @@ module BombermanRuby
         end
 
         private
-
-        def load!
-          lines = File.read(@map_path).split("\n").map(&:chars)
-          lines.each_with_index do |line, y|
-            line.each_with_index do |c, x|
-              @entities << CHARS_MAPPING[c].new(grid_x: x, grid_y: y, map: self) if CHARS_MAPPING.key?(c)
-              @starting_positions[c.to_i] = StartingPosition.new(grid_x: x, grid_y: y) if STARTING_POSITION_CHARS
-                                                                                          .include?(c)
-            end
-          end
-          load_items!
-          load_players!
-        end
-
-        def load_items!
-          delete_extra_soft_blocks!
-          set_blocks_items!
-        end
-
-        def load_players!
-          [@starting_positions.count, @game.inputs.count].min.times do |i|
-            @players << instanciate_player(i)
-          end
-        end
-
-        def instanciate_player(id)
-          Entities::Player.new(
-            grid_x: @starting_positions[id].grid_x,
-            grid_y: @starting_positions[id].grid_y,
-            map: self,
-            input: @game.inputs[id],
-            id:,
-            **config.transform_keys(&:to_sym).slice(*PLAYER_CONFIG_KEYS)
-          )
-        end
-
-        def config
-          @config ||= YAML.load_file(@map_config_path)
-        end
-
-        def delete_extra_soft_blocks!
-          shuffled_soft_blocks = @entities.select { |e| e.is_a?(Entities::Blocks::Soft) }.shuffle
-          shuffled_soft_blocks.pop(config["soft_blocks"])
-          @entities.delete_if { |e| shuffled_soft_blocks.include?(e) }
-        end
-
-        def set_blocks_items!
-          shuffled_soft_blocks = @entities.select { |e| e.is_a?(Entities::Blocks::Soft) }.shuffle
-          CONFIG_ITEM_MAPPING.each do |config_key, item|
-            config[config_key].times { shuffled_soft_blocks.pop.item = item }
-          end
-        end
 
         def send_map
           displayable_entities = @entities.reject(&:skip_serialization?)
