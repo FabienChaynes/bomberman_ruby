@@ -19,7 +19,7 @@ module BombermanRuby
 
             move_to_center!
             @map.entities.delete(self)
-            @map.entities << Fire.new(grid_x: grid_coord[:x], grid_y: grid_coord[:y], map: @map, type: :middle)
+            @map.entities << Fire.new(grid_x: grid_coord[:x], grid_y: grid_coord[:y], map: @map, type: :center)
             burn_entities!(grid_coord[:x], grid_coord[:y])
             add_fires!
           end
@@ -54,16 +54,19 @@ module BombermanRuby
           end
 
           def add_fire!(grid_coord_x, grid_coord_y, type)
-            blocked = @map.entities.any? do |e|
-              e.blocking? && e.grid_collide?(grid_coord_x, grid_coord_y)
-            end
+            stop_fire = blocked?(grid_coord_x, grid_coord_y)
             burn_entities!(grid_coord_x, grid_coord_y)
-            return false if blocked
+            return false if stop_fire
 
-            if @map.entities.none? { |e| e.is_a?(Fire) && e.grid_collide?(grid_coord_x, grid_coord_y) }
-              @map.entities << Fire.new(grid_x: grid_coord_x, grid_y: grid_coord_y, map: @map, type:)
-            end
+            @map.entities << Fire.new(grid_x: grid_coord_x, grid_y: grid_coord_y, map: @map, type:)
             true
+          end
+
+          def blocked?(grid_coord_x, grid_coord_y)
+            @map.entities.any? do |e|
+              (e.blocking? || e.is_a?(Items::Base)) &&
+                e.grid_collide?(grid_coord_x, grid_coord_y)
+            end
           end
 
           def burn_entities!(grid_coord_x, grid_coord_y)

@@ -3,22 +3,33 @@
 module BombermanRuby
   module Entities
     class Fire < Base
+      include Concerns::Burnable
+
       EXPLOSION_DURATION_MS = 500
 
       EXPLODING_SAMPLE = Gosu::Sample.new("#{ASSETS_PATH}/sound/bomb.wav").freeze
-      FIRE_SPRITES = Bomb::SPRITES[3..10]
+      SPRITES = Gosu::Image.load_tiles(
+        "#{ASSETS_PATH}/images/flames.png",
+        Window::SPRITE_SIZE,
+        Window::SPRITE_SIZE,
+        tileable: true
+      ).freeze
+      CENTER_SPRITES = [SPRITES[8], SPRITES[9], SPRITES[10], SPRITES[11], SPRITES[10], SPRITES[9], SPRITES[8]].freeze
+      MIDDLE_SPRITES = [SPRITES[4], SPRITES[5], SPRITES[6], SPRITES[7], SPRITES[6], SPRITES[5], SPRITES[4]].freeze
+      EXTREMITY_SPRITES = [SPRITES[0], SPRITES[1], SPRITES[2], SPRITES[3], SPRITES[2], SPRITES[1], SPRITES[0]].freeze
       FIRE_SPRITES_MAPPING = {
-        middle: FIRE_SPRITES[2],
-        middle_left: FIRE_SPRITES[1],
-        middle_right: FIRE_SPRITES[3],
-        middle_top: FIRE_SPRITES[6],
-        middle_bottom: FIRE_SPRITES[6],
-        left: FIRE_SPRITES[0],
-        right: FIRE_SPRITES[4],
-        top: FIRE_SPRITES[5],
-        bottom: FIRE_SPRITES[7],
+        center: CENTER_SPRITES,
+        middle_left: MIDDLE_SPRITES,
+        middle_right: MIDDLE_SPRITES,
+        middle_top: MIDDLE_SPRITES,
+        middle_bottom: MIDDLE_SPRITES,
+        left: EXTREMITY_SPRITES,
+        right: EXTREMITY_SPRITES,
+        top: EXTREMITY_SPRITES,
+        bottom: EXTREMITY_SPRITES,
       }.freeze
 
+      SERIALIZABLE_VARS = (Base::SERIALIZABLE_VARS + %i[burning_index]).freeze
       SERIALIZABLE_VARS_SYMBOLS = (Base::SERIALIZABLE_VARS_SYMBOLS + %i[type sound]).freeze
 
       attr_writer :type, :sound
@@ -26,24 +37,60 @@ module BombermanRuby
       def initialize(args)
         @type = args.delete(:type)
         super(**args)
-        @exploded_at = Gosu.milliseconds
+        @burned_at = Gosu.milliseconds
         @sound = :initial
+        @burning_index = 0
       end
 
       def update
         @sound = @sound == :initial ? :exploding : nil
         burn_colliding_bombs
-        return if Gosu.milliseconds < @exploded_at + EXPLOSION_DURATION_MS
-
-        @map.entities.delete(self)
+        super
       end
 
       def draw
-        sprite.draw(@x, @y, Bomb::BOMB_Z)
+        sprite.draw_rot(@x, @y, Bomb::BOMB_Z, draw_angle, draw_center_x, draw_center_y)
         play_sound
       end
 
+      def burn!; end
+
       private
+
+      def burning_sprites
+        CENTER_SPRITES
+      end
+
+      def draw_angle
+        case @type
+        when :middle_right, :right
+          90
+        when :middle_left, :left
+          -90
+        when :middle_bottom, :bottom
+          180
+        else
+          0
+        end
+      end
+
+      def draw_center_x
+        case @type
+        when :middle_left, :left, :middle_bottom, :bottom
+          1
+        else
+          0
+        end
+      end
+
+      def draw_center_y
+        case @type
+        when :middle_right, :right, :middle_bottom, :bottom
+          1
+        else
+          0
+        end
+      end
 
       def burn_colliding_bombs
         colliding_entities
@@ -52,7 +99,7 @@ module BombermanRuby
       end
 
       def sprite
-        FIRE_SPRITES_MAPPING[@type]
+        FIRE_SPRITES_MAPPING[@type][@burning_index]
       end
 
       def play_sound

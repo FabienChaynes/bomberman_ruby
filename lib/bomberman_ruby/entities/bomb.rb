@@ -19,8 +19,7 @@ module BombermanRuby
       SPRITES = Gosu::Image.load_tiles(
         "#{ASSETS_PATH}/images/bomb.png",
         Window::SPRITE_SIZE,
-        Window::SPRITE_SIZE,
-        tileable: true
+        Window::SPRITE_SIZE
       ).freeze
       BOMB_SPRITES = SPRITES[0..2]
 
@@ -50,7 +49,8 @@ module BombermanRuby
 
       def colliding_entities(target_x = @x, target_y = @y)
         colliding_players = @map.players.select do |player|
-          collide?(player, target_x, target_y) && !collide?(player)
+          collide?(player, target_x, target_y) &&
+            (!collide?(player) || !current_colliding_conveyor || @thrown_direction)
         end
         colliding_entities_list = super
 
