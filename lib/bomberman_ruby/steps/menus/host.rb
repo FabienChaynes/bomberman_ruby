@@ -23,9 +23,14 @@ module BombermanRuby
           "Curvage",
           "Moon Warp",
         ].freeze
-        MAP_COUNT = 3
+        MAP_COUNT = 4
         MAP_CHANGE_DELAY = 250
         MAP_STEP_ID = 1
+
+        def initialize(args)
+          @current_map_index = args.delete(:map_index) || 0
+          super(**args)
+        end
 
         def update
           @inputs = @game.inputs

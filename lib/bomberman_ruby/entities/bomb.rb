@@ -69,7 +69,7 @@ module BombermanRuby
       private
 
       def on_conveyor(conveyor)
-        move_to_center! if colliding_entities(@x + conveyor.x_delta, @y + conveyor.y_delta).any?
+        move_to_center! if !@direction && colliding_entities(@x + conveyor.x_delta, @y + conveyor.y_delta).any?
         return unless conveyor.x == @x && conveyor.y == @y
 
         @direction = nil

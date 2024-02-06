@@ -17,6 +17,7 @@ module BombermanRuby
           def explode!
             return if @thrown_direction
 
+            move_to_center!
             @map.entities.delete(self)
             @map.entities << Fire.new(grid_x: grid_coord[:x], grid_y: grid_coord[:y], map: @map, type: :middle)
             burn_entities!(grid_coord[:x], grid_coord[:y])
@@ -30,19 +31,31 @@ module BombermanRuby
             add_radius_fire!(:bottom)
           end
 
+          def bomb_radius
+            colliding_snow_hut = @map.entities.find do |e|
+              e.is_a?(Entities::SnowHut) && e.grid_collide?(*grid_coord.fetch_values(:x, :y))
+            end
+            if colliding_snow_hut
+              colliding_snow_hut.blow_up_ceiling
+              Entities::Player::MAX_BOMB_RADIUS
+            else
+              @player.bomb_radius
+            end
+          end
+
           def add_radius_fire!(direction)
             fire_direction = FIRE_DIRECTION[direction]
-            1.upto(@player.bomb_radius) do |current_radius|
+            1.upto(bomb_radius) do |current_radius|
               x_delta = current_radius * fire_direction[:x]
               y_delta = current_radius * fire_direction[:y]
-              type = current_radius == @player.bomb_radius ? direction : :"middle_#{direction}"
+              type = current_radius == bomb_radius ? direction : :"middle_#{direction}"
               break unless add_fire!(grid_coord[:x] + x_delta, grid_coord[:y] + y_delta, type)
             end
           end
 
           def add_fire!(grid_coord_x, grid_coord_y, type)
             blocked = @map.entities.any? do |e|
-              e.is_a?(Concerns::Blockable) && e.grid_collide?(grid_coord_x, grid_coord_y)
+              e.blocking? && e.grid_collide?(grid_coord_x, grid_coord_y)
             end
             burn_entities!(grid_coord_x, grid_coord_y)
             return false if blocked

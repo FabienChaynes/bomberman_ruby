@@ -75,6 +75,10 @@ module BombermanRuby
         grid_coord[:x] == target_grid_x && grid_coord[:y] == target_grid_y
       end
 
+      def blocking?
+        false
+      end
+
       private
 
       def collide?(other_entity, target_x = @x, target_y = @y)
@@ -84,7 +88,7 @@ module BombermanRuby
 
       def colliding_entities(target_x = @x, target_y = @y)
         @map.entities.select do |entity|
-          next unless entity.is_a?(Concerns::Blockable)
+          next unless entity.blocking?
           next if entity == self
 
           collide?(entity, target_x, target_y)

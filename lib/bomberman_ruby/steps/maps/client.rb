@@ -21,6 +21,7 @@ module BombermanRuby
           "Buttons::RotationChange",
           "Buttons::SpeedChange",
           "Fire",
+          "Hole",
           "Items::BombUp",
           "Items::FireUp",
           "Items::Skull",
@@ -29,6 +30,7 @@ module BombermanRuby
           "Items::Punch",
           "Items::LineBomb",
           "Player",
+          "SnowHut",
         ].freeze
 
         def update

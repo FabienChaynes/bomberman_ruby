@@ -45,8 +45,7 @@ module BombermanRuby
           def punch_bomb!
             return unless @punch
 
-            center_grid_coord_x, center_grid_coord_y = center_grid_coord.values_at(:x, :y)
-            x_grid_target, y_grid_target = increment_position(center_grid_coord_x, center_grid_coord_y)
+            x_grid_target, y_grid_target = increment_position(*center_grid_coord.fetch_values(:x, :y))
             @map.entities.each do |e|
               next unless e.is_a?(Entities::Bomb)
               next unless e.grid_collide?(x_grid_target, y_grid_target)

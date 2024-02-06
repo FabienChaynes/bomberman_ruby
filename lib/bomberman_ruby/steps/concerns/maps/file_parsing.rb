@@ -27,6 +27,8 @@ module BombermanRuby
             "┘" => [Entities::Blocks::Soft, Entities::Conveyors::BottomRight],
             "S" => [Entities::Blocks::Soft, Entities::Buttons::SpeedChange],
             "R" => [Entities::Blocks::Soft, Entities::Buttons::RotationChange],
+            "i" => [Entities::SnowHut],
+            "h" => [Entities::Blocks::Soft, Entities::Hole],
           }.freeze
           STARTING_POSITION_CHARS = ("0"..(Games::Base::MAX_PLAYER_COUNT - 1).to_s)
           PLAYER_CONFIG_KEYS = %i[

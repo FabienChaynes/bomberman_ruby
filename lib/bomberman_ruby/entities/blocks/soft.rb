@@ -19,6 +19,7 @@ module BombermanRuby
             SOFT_BLOCK_SPRITES[1], SOFT_BLOCK_SPRITES[2], SOFT_BLOCK_SPRITES[3], SOFT_BLOCK_SPRITES[2],
             SOFT_BLOCK_SPRITES[1], SOFT_BLOCK_SPRITES[4], SOFT_BLOCK_SPRITES[5], SOFT_BLOCK_SPRITES[4]
           ],
+          3 => [SOFT_BLOCK_SPRITES[6]],
         }.freeze
         ITEM_MAPPING = {
           bomb_up: Items::BombUp,

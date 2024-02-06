@@ -17,7 +17,6 @@ module BombermanRuby
         def initialize(game:)
           super
           @inputs = []
-          @current_map_index = 0
           MENU_SONG.play(true)
         end
 

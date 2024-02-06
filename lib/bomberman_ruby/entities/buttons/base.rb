@@ -4,6 +4,8 @@ module BombermanRuby
   module Entities
     module Buttons
       class Base < Entities::Base
+        include Concerns::Triggerable
+
         ASSETS_PATH = "#{__dir__}/../../../../assets".freeze
         SPRITES = Gosu::Image.load_tiles(
           "#{ASSETS_PATH}/images/buttons.png",
@@ -20,27 +22,11 @@ module BombermanRuby
         end
 
         def update
-          unless @triggerable
-            @triggerable = !colliding_players?
-            return
-          end
-          return unless colliding_players?
-
-          trigger!
-          @triggered = !@triggered
-          @triggerable = false
+          check_trigger!
         end
 
         def draw
           current_sprite.draw(@x, @y, BUTTON_Z)
-        end
-
-        private
-
-        def colliding_players?
-          @map.players.any? do |player|
-            collide?(player)
-          end
         end
       end
     end

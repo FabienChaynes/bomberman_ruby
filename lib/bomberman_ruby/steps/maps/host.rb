@@ -39,7 +39,7 @@ module BombermanRuby
           end_round(alive_players.first)
           return if Gosu.milliseconds < @ended_at + END_ROUND_DURATION_MS
 
-          @game.step = Menus::Host.new(game: @game)
+          @game.step = Menus::Host.new(game: @game, map_index: index)
           send_step(Steps::Base::STEP_IDS[:menu])
         end
 

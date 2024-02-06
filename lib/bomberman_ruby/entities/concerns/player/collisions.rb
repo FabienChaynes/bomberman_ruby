@@ -9,7 +9,7 @@ module BombermanRuby
 
           def colliding_entities(_target_x, _target_y)
             super.reject do |e|
-              e.is_a?(Entities::Bomb) && collide?(e)
+              (e.is_a?(Entities::Bomb) || e.is_a?(Entities::Hole)) && collide?(e)
             end
           end
 
