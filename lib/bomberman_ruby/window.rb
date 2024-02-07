@@ -9,7 +9,7 @@ module BombermanRuby
 
     def initialize(options)
       super((WIDTH * INITIAL_SCALING_FACTOR).round, (HEIGHT * INITIAL_SCALING_FACTOR).round)
-      @game = options[:server_ip] ? Games::Client.new(options) : Games::Host.new(options)
+      @game = options[:server_host] ? Games::Client.new(options) : Games::Host.new(options)
     end
 
     def update

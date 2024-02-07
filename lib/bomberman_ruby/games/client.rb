@@ -30,8 +30,7 @@ module BombermanRuby
       end
 
       def initialize_socket
-        @socket = UDPSocket.new(Socket::AF_INET6)
-        @socket.connect(@options[:server_ip], @options[:server_port])
+        @socket = Addrinfo.udp(@options[:server_host], @options[:server_port]).connect
         @inputs.each do |input|
           connect_input(input)
         end

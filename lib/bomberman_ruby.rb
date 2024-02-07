@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "gosu"
+require "ipaddr"
 require "msgpack"
 require "optparse"
 require "socket"
@@ -93,17 +94,25 @@ module BombermanRuby
     def parse_options # rubocop:disable Metrics/MethodLength
       options = {
         server_port: Games::Host::DEFAULT_PORT,
+        local_only: false,
       }
       OptionParser.new do |opts|
         opts.banner = "Usage: bomberman [options]"
 
         opts.on(
-          "-sIP",
-          "--server-ip IP",
-          String,
-          "Server IP to connect to. If not provided, the game will be hosted on this machine."
+          "-l",
+          "--local-only",
+          "Local only game, the server part won't be launched"
         ) do |s|
-          options[:server_ip] = s
+          options[:local_only] = true
+        end
+        opts.on(
+          "-sHOST",
+          "--server-host HOST",
+          String,
+          "Server host (IP or hostname) to connect to. If not provided, the game will be hosted on this machine."
+        ) do |s|
+          options[:server_host] = s
         end
         opts.on("-pPORT", "--server-port PORT", Integer,
                 "Server port (default: #{Games::Host::DEFAULT_PORT})") do |port|
@@ -121,6 +130,11 @@ module BombermanRuby
           options[:player_number] = n
         end
       end.parse!
+
+      if options[:local_only] && (options[:server_host] || options[:server_port] != Games::Host::DEFAULT_PORT)
+        puts "server-host and port options can't be provided for local only games."
+        exit
+      end
 
       options
     end

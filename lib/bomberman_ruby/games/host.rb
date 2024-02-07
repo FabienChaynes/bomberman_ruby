@@ -27,12 +27,16 @@ module BombermanRuby
       private
 
       def initialize_socket
+        @client_sockets = Set.new
+        return if @options[:local_only]
+
         @socket = UDPSocket.new(Socket::AF_INET6)
         @socket.bind("::", @options[:server_port])
-        @client_sockets = Set.new
       end
 
       def read_socket
+        return unless @socket
+
         loop do
           process_next_msg
         end

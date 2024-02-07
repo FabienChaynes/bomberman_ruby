@@ -32,9 +32,11 @@ You can start a local game with `./bin/bomberman`.
 
 Use `./bin/bomberman -h` to list the different options.
 
-By default, if no options are provided, a server will be started locally. To connect to a running server, provide its IP address with the `-s` command option.
+By default, if no options are provided, a server will be started locally. To connect to a running server, provide its IP address or hostname with the `-s` command option.
 
 You can change the port (both on the client and on the server) using the `-p` option.
+
+To run a local game only, pass the `-l` option (in this case, `-s` and `-p` are not accepted).
 
 `-c` can be used to provide a path to an alternate configuration file. The configuration file is used to map your keys to the game commands.
 
