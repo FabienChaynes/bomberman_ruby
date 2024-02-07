@@ -5,6 +5,8 @@ module BombermanRuby
     module Concerns
       module Player
         module Sprite
+          include SmallSprite
+
           ASSETS_PATH = "#{__dir__}/../../../../../assets".freeze
           PLAYER_Z = 10
           SPRITE_COUNT = 12
@@ -33,17 +35,25 @@ module BombermanRuby
           DEATH_SPRITE_COUNT = DEATH_SPRITE_INDEXES.count
 
           SKULL_EFFECT_COLORS = [
-            Gosu::Color.new(0xff_ffffff),
-            Gosu::Color.new(0xff_cccccc),
-            Gosu::Color.new(0xff_999999),
-            Gosu::Color.new(0xff_666666),
-            Gosu::Color.new(0xff_333333),
-            Gosu::Color.new(0xff_666666),
-            Gosu::Color.new(0xff_999999),
-            Gosu::Color.new(0xff_cccccc),
+            Gosu::Color.new(0xff_ffffff), Gosu::Color.new(0xff_cccccc), Gosu::Color.new(0xff_999999),
+            Gosu::Color.new(0xff_666666), Gosu::Color.new(0xff_333333), Gosu::Color.new(0xff_666666),
+            Gosu::Color.new(0xff_999999), Gosu::Color.new(0xff_cccccc)
           ].freeze
 
           private
+
+          def draw_coords(sprite)
+            draw_x = @x
+            draw_y = @y
+            draw_x, draw_y = small_draw_coords(draw_x, draw_y) if minimize?
+            if dead?
+              draw_x -= (DEATH_SPRITE_WIDTH - SPRITE_WIDTH) / 2
+              draw_y -= (DEATH_SPRITE_HEIGHT - SPRITE_HEIGHT) / 2
+            elsif @direction == :right
+              draw_x += sprite.width
+            end
+            [draw_x, draw_y]
+          end
 
           def current_sprite
             return current_death_sprite if dead?
@@ -72,20 +82,24 @@ module BombermanRuby
             sprite_indexes.map { |i| SPRITES[(@id * SPRITE_COUNT) + i] }
           end
 
-          def walking_down_sprites
-            @walking_down_sprites ||= fetch_player_sprite(WALKING_DOWN_SPRITE_INDEXES)
-          end
+          %i[walking_down walking_up walking_left winning].each do |sprites_name|
+            class_eval <<-RUBY, __FILE__, __LINE__ + 1
+              # def walking_down_sprites
+              #   if minimize?
+              #     @small_walking_down_sprites ||= fetch_small_player_sprite(WALKING_DOWN_SMALL_SPRITE_INDEXES)
+              #   else
+              #     @walking_down_sprites ||= fetch_player_sprite(WALKING_DOWN_SPRITE_INDEXES)
+              #   end
+              # end
 
-          def walking_up_sprites
-            @walking_up_sprites ||= fetch_player_sprite(WALKING_UP_SPRITE_INDEXES)
-          end
-
-          def walking_left_sprites
-            @walking_left_sprites ||= fetch_player_sprite(WALKING_LEFT_SPRITE_INDEXES)
-          end
-
-          def winning_sprites
-            @winning_sprites ||= fetch_player_sprite(WINNING_SPRITE_INDEXES)
+              def #{sprites_name}_sprites
+                if minimize?
+                  @small_#{sprites_name}_sprites ||= fetch_small_player_sprite(#{sprites_name.upcase}_SMALL_SPRITE_INDEXES)
+                else
+                  @#{sprites_name}_sprites ||= fetch_player_sprite(#{sprites_name.upcase}_SPRITE_INDEXES)
+                end
+              end
+            RUBY
           end
 
           def stunned_sprites

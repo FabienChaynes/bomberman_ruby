@@ -13,6 +13,7 @@ module BombermanRuby
             "kicks" => :kick,
             "punches" => :punch,
             "line_bombs" => :line_bomb,
+            "full_fires" => :full_fire,
           }.freeze
           CHARS_MAPPING = {
             "x" => [Entities::Blocks::Hard],
@@ -30,6 +31,12 @@ module BombermanRuby
             "i" => [Entities::SnowHut],
             "h" => [Entities::Blocks::Soft, Entities::Hole],
             "l" => [Entities::Blocks::Soft],
+            "┬" => [Entities::Pipes::Up],
+            "┼" => [Entities::Pipes::Middle],
+            "┴" => [Entities::Pipes::Down],
+            "├" => [Entities::Pipes::Left],
+            "┤" => [Entities::Pipes::Right],
+            "p" => [Entities::Pipes::Base],
           }.freeze
           STARTING_POSITION_CHARS = ("0"..(Games::Base::MAX_PLAYER_COUNT - 1).to_s)
           PLAYER_CONFIG_KEYS = %i[

@@ -50,7 +50,7 @@ module BombermanRuby
 
       def draw
         scale_x = @direction == :right && !dead? ? -1 : 1
-        draw_x, draw_y = draw_coords
+        draw_x, draw_y = draw_coords(current_sprite)
         current_sprite.draw(draw_x, draw_y, PLAYER_Z, scale_x, 1, sprite_color)
         play_sound
         # debug_hitbox
@@ -78,18 +78,6 @@ module BombermanRuby
       end
 
       private
-
-      def draw_coords
-        draw_x = @x
-        draw_y = @y
-        if dead?
-          draw_x -= (DEATH_SPRITE_WIDTH - SPRITE_WIDTH) / 2
-          draw_y -= (DEATH_SPRITE_HEIGHT - SPRITE_HEIGHT) / 2
-        elsif @direction == :right
-          draw_x += SPRITE_WIDTH
-        end
-        [draw_x, draw_y]
-      end
 
       def cancel_stun!
         return unless @stunned_at && @stunned_at + STUNNED_DURATION_MS < Gosu.milliseconds

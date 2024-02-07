@@ -27,6 +27,7 @@ module BombermanRuby
           3 => [SOFT_BLOCK_SPRITES[6]],
           4 => [SOFT_BLOCK_SPRITES[7], SOFT_BLOCK_SPRITES[8], SOFT_BLOCK_SPRITES[9], SOFT_BLOCK_SPRITES[10],
                 SOFT_BLOCK_SPRITES[9]],
+          5 => [SOFT_BLOCK_SPRITES[11]],
         }.freeze
         MAP_BURNING_SOFT_BLOCK_SPRITES = {
           0 => [BURNING_SOFT_BLOCK_SPRITES[0], BURNING_SOFT_BLOCK_SPRITES[1], BURNING_SOFT_BLOCK_SPRITES[2],
@@ -38,6 +39,8 @@ module BombermanRuby
                 BURNING_SOFT_BLOCK_SPRITES[13], BURNING_SOFT_BLOCK_SPRITES[14]],
           4 => [BURNING_SOFT_BLOCK_SPRITES[15], BURNING_SOFT_BLOCK_SPRITES[16], BURNING_SOFT_BLOCK_SPRITES[17],
                 BURNING_SOFT_BLOCK_SPRITES[18], BURNING_SOFT_BLOCK_SPRITES[19]],
+          5 => [BURNING_SOFT_BLOCK_SPRITES[20], BURNING_SOFT_BLOCK_SPRITES[21], BURNING_SOFT_BLOCK_SPRITES[22],
+                BURNING_SOFT_BLOCK_SPRITES[23], BURNING_SOFT_BLOCK_SPRITES[24]],
         }.freeze
         ITEM_MAPPING = {
           bomb_up: Items::BombUp,
@@ -47,6 +50,7 @@ module BombermanRuby
           kick: Items::Kick,
           punch: Items::Punch,
           line_bomb: Items::LineBomb,
+          full_fire: Items::FullFire,
         }.freeze
 
         SERIALIZABLE_VARS = (Base::SERIALIZABLE_VARS + %i[burning_index]).freeze

@@ -13,6 +13,7 @@ module BombermanRuby
             Items::Kick => :enable_kick!,
             Items::Punch => :enable_punch!,
             Items::LineBomb => :enable_line_bomb!,
+            Items::FullFire => :set_max_bomb_radius!,
           }.freeze
           MAX_BOMB_CAPACITY = 5
           MAX_BOMB_RADIUS = 9
@@ -34,6 +35,10 @@ module BombermanRuby
 
           def increase_bomb_radius!
             @bomb_radius += 1 unless @bomb_radius >= MAX_BOMB_RADIUS
+          end
+
+          def set_max_bomb_radius!
+            @bomb_radius = MAX_BOMB_RADIUS
           end
 
           def increase_speed!

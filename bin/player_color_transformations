@@ -1,8 +1,8 @@
 #!/bin/bash
 
-if [ $# -lt 1 ]
+if [ $# -lt 2 ]
 then
-  echo "The original file name must be provided"
+  echo "The original and destination file names must be provided"
   exit 1
 fi
 
@@ -36,7 +36,7 @@ convert $1 \
 -fill "#408840" -opaque "#d01830" \
 player_3.png
 
-convert player_0.png player_1.png player_2.png player_3.png -append player.png
+convert $1 player_1.png player_2.png player_3.png -append $2
 rm player_1.png player_2.png player_3.png
 else
   echo "File does not exist"

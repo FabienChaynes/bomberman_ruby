@@ -23,7 +23,7 @@ module BombermanRuby
           "Curvage",
           "Moon Warp",
         ].freeze
-        MAP_COUNT = 5
+        MAP_COUNT = 6
         MAP_CHANGE_DELAY = 250
         MAP_STEP_ID = 1
 
