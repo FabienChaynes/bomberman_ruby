@@ -9,26 +9,32 @@ module BombermanRuby
         DESERIALIZABLE_CLASSES = [
           "BombermanRuby::Inputs::Local",
           "BombermanRuby::Inputs::Network",
+          "BombermanRuby::Steps::Menus::MapIcon",
         ].freeze
 
         def update
           update_menu_state
         end
 
-        def draw
-          super
-          FONT.draw_text("Waiting for the host to start the game",
-                         0, Window::HEIGHT - FONT_SIZE, INPUT_Z, 1, 1, FONT_COLOR)
-        end
-
         private
 
         def update_menu_state
-          return unless (inputs = read_socket)
+          return unless (entities = read_socket)
 
           @inputs = []
-          inputs.each do |e|
-            @inputs << Object.const_get(e["class"]).deserialize(e)
+          @entities = []
+          entities.each do |e|
+            add_entity(e)
+          end
+        end
+
+        def add_entity(entity_hash)
+          entity = Object.const_get(entity_hash["class"]).deserialize(entity_hash)
+          case entity
+          when Inputs::Base
+            @inputs << entity
+          when MapIcon
+            @map_icon = entity
           end
         end
       end

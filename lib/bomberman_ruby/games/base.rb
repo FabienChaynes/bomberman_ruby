@@ -13,7 +13,6 @@ module BombermanRuby
         right
         bomb
         action
-        start
       ].freeze
       CONFIG_DIR = "#{__dir__}/../../../config".freeze
       MAX_PLAYER_COUNT = 4

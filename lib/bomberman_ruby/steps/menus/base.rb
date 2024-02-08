@@ -17,6 +17,7 @@ module BombermanRuby
         def initialize(game:)
           super
           @inputs = []
+          @map_icon = MapIcon.new(index: 0)
           MENU_SONG.play(true)
         end
 
@@ -28,6 +29,8 @@ module BombermanRuby
             Entities::Player::SPRITES[sprite_index + sprite_offset]
               .draw(i * (Entities::Player::SPRITE_WIDTH + INPUT_SPRITE_MARGIN), INPUT_Z)
           end
+          @map_icon.draw
+          FONT.draw_text("Press action to launch the game", 0, Window::HEIGHT - FONT_SIZE, INPUT_Z, 1, 1, FONT_COLOR)
         end
 
         private

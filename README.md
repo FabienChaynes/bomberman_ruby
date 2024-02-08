@@ -48,7 +48,7 @@ The configuration file uses [YAML](https://yaml.org/).
 
 Each root element will represent a player. The sub-elements will contain the different actions possible in the game. Each action will then be mapped to one or several keys.
 
-For example, the following config file will convert to a player using the arrow keys to move, the "X" key to drop a bomb, the "Z" key for the action and the "space" key to start:
+For example, the following config file will convert to a player using the arrow keys to move, the "X" key to drop a bomb and the "Z" key for the action:
 ```yml
 0:
   up:
@@ -63,8 +63,6 @@ For example, the following config file will convert to a player using the arrow 
     - KB_X
   action:
     - KB_Z
-  start:
-    - KB_SPACE
 ```
 
 Two players defined in one configuration file will look like this (replacing `[...]` by the player configuration):
@@ -104,7 +102,5 @@ Gamepads can be mapped using the gamepads buttons names:
     - GP_0_BUTTON_0
   action:
     - GP_0_BUTTON_1
-  start:
-    - GP_0_BUTTON_6
 ```
 You can map several gamepads with `GP_1_*`, `GP_2_*`, etc...
