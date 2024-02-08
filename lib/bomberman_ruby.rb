@@ -92,19 +92,19 @@ module BombermanRuby
 
     private
 
-    def parse_options # rubocop:disable Metrics/MethodLength
+    def parse_options # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       options = {
         server_port: Games::Host::DEFAULT_PORT,
         local_only: false,
       }
-      OptionParser.new do |opts|
+      OptionParser.new do |opts| # rubocop:disable Metrics/BlockLength
         opts.banner = "Usage: bomberman [options]"
 
         opts.on(
           "-l",
           "--local-only",
           "Local only game, the server part won't be launched"
-        ) do |s|
+        ) do
           options[:local_only] = true
         end
         opts.on(
