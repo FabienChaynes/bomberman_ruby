@@ -1,0 +1,317 @@
+Serialization
+6000 iterations
+=================================================================
+
+Type: entities
+Rehearsal --------------------------------------------------------
+msgpack_zlib (425)     0.199113   0.003901   0.203014 (  0.203088)
+protobuf_zlib (319)    0.862260   0.000000   0.862260 (  0.862400)
+json_oj_zlib (469)     0.252282   0.000000   0.252282 (  0.252285)
+rapidjson_zlib (469)   0.256744   0.000017   0.256761 (  0.256774)
+json_zlib (469)        0.322364   0.000000   0.322364 (  0.322394)
+bson_zlib (584)        0.676884   0.000000   0.676884 (  0.676928)
+msgpack (2724)         0.053162   0.000011   0.053173 (  0.053179)
+protobuf (1583)        0.758020   0.000000   0.758020 (  0.758098)
+json_oj (3994)         0.068786   0.003990   0.072776 (  0.072790)
+rapidjson (3994)       0.083703   0.000000   0.083703 (  0.083717)
+json (3994)            0.145852   0.000000   0.145852 (  0.145868)
+bson (4017)            0.331619   0.000012   0.331631 (  0.331644)
+----------------------------------------------- total: 4.018720sec
+
+                           user     system      total        real
+msgpack_zlib (425)     0.198233   0.000000   0.198233 (  0.198250)
+protobuf_zlib (319)    0.879926   0.000000   0.879926 (  0.879999)
+json_oj_zlib (469)     0.247573   0.000006   0.247579 (  0.247616)
+rapidjson_zlib (469)   0.255355   0.000000   0.255355 (  0.255371)
+json_zlib (469)        0.323633   0.000000   0.323633 (  0.323643)
+bson_zlib (584)        0.673338   0.000000   0.673338 (  0.673438)
+msgpack (2724)         0.054137   0.000007   0.054144 (  0.054147)
+protobuf (1583)        0.778991   0.000000   0.778991 (  0.779150)
+json_oj (3994)         0.067124   0.003992   0.071116 (  0.071127)
+rapidjson (3994)       0.080999   0.000005   0.081004 (  0.081016)
+json (3994)            0.144536   0.000002   0.144538 (  0.144540)
+bson (4017)            0.330692   0.000000   0.330692 (  0.330696)
+
+------------------ IPS ------------------
+ruby 3.3.0 (2023-12-25 revision 5124f9ac75) [x86_64-linux]
+Warming up --------------------------------------
+  msgpack_zlib (425)     3.057k i/100ms
+ protobuf_zlib (319)   700.000 i/100ms
+  json_oj_zlib (469)     2.455k i/100ms
+rapidjson_zlib (469)     2.324k i/100ms
+     json_zlib (469)     1.869k i/100ms
+     bson_zlib (584)   909.000 i/100ms
+      msgpack (2724)    11.477k i/100ms
+     protobuf (1583)   774.000 i/100ms
+      json_oj (3994)     8.770k i/100ms
+    rapidjson (3994)     7.702k i/100ms
+         json (3994)     4.194k i/100ms
+         bson (4017)     1.838k i/100ms
+Calculating -------------------------------------
+  msgpack_zlib (425)     30.501k (± 1.2%) i/s -    152.850k in   5.011967s
+ protobuf_zlib (319)      6.851k (± 1.2%) i/s -     34.300k in   5.007303s
+  json_oj_zlib (469)     24.458k (± 0.7%) i/s -    122.750k in   5.018986s
+rapidjson_zlib (469)     23.511k (± 1.4%) i/s -    118.524k in   5.042158s
+     json_zlib (469)     18.723k (± 0.7%) i/s -     95.319k in   5.091375s
+     bson_zlib (584)      9.114k (± 0.8%) i/s -     46.359k in   5.086856s
+      msgpack (2724)    116.318k (± 1.3%) i/s -    585.327k in   5.033038s
+     protobuf (1583)      7.852k (±11.3%) i/s -     38.700k in   5.025333s
+      json_oj (3994)     87.032k (± 1.2%) i/s -    438.500k in   5.039085s
+    rapidjson (3994)     77.175k (± 1.6%) i/s -    392.802k in   5.091112s
+         json (3994)     41.432k (± 3.7%) i/s -    209.700k in   5.069752s
+         bson (4017)     18.251k (± 2.3%) i/s -     91.900k in   5.038182s
+
+Comparison:
+      msgpack (2724):   116317.8 i/s
+      json_oj (3994):    87032.4 i/s - 1.34x  slower
+    rapidjson (3994):    77174.9 i/s - 1.51x  slower
+         json (3994):    41431.7 i/s - 2.81x  slower
+  msgpack_zlib (425):    30501.3 i/s - 3.81x  slower
+  json_oj_zlib (469):    24458.5 i/s - 4.76x  slower
+rapidjson_zlib (469):    23511.5 i/s - 4.95x  slower
+     json_zlib (469):    18722.7 i/s - 6.21x  slower
+         bson (4017):    18251.4 i/s - 6.37x  slower
+     bson_zlib (584):     9114.1 i/s - 12.76x  slower
+     protobuf (1583):     7851.7 i/s - 14.81x  slower
+ protobuf_zlib (319):     6851.0 i/s - 16.98x  slower
+
+================== END ==================
+
+Type: menu
+Rehearsal -------------------------------------------------------
+msgpack_zlib (79)     0.048767   0.000001   0.048768 (  0.048770)
+protobuf_zlib (65)    0.089174   0.000000   0.089174 (  0.089195)
+json_oj_zlib (83)     0.045763   0.000000   0.045763 (  0.045775)
+rapidjson_zlib (83)   0.047932   0.000000   0.047932 (  0.047938)
+json_zlib (83)        0.052462   0.000000   0.052462 (  0.052474)
+bson_zlib (96)        0.065153   0.000000   0.065153 (  0.065319)
+msgpack (125)         0.007689   0.000000   0.007689 (  0.007690)
+protobuf (104)        0.052747   0.000000   0.052747 (  0.052843)
+json_oj (142)         0.004766   0.000000   0.004766 (  0.004769)
+rapidjson (142)       0.005540   0.000000   0.005540 (  0.005549)
+json (142)            0.011308   0.000000   0.011308 (  0.011311)
+bson (168)            0.019263   0.000000   0.019263 (  0.019267)
+---------------------------------------------- total: 0.450565sec
+
+                          user     system      total        real
+msgpack_zlib (79)     0.047313   0.000000   0.047313 (  0.047315)
+protobuf_zlib (65)    0.090593   0.000000   0.090593 (  0.090602)
+json_oj_zlib (83)     0.043938   0.000000   0.043938 (  0.043952)
+rapidjson_zlib (83)   0.044829   0.000000   0.044829 (  0.044831)
+json_zlib (83)        0.048353   0.000000   0.048353 (  0.048424)
+bson_zlib (96)        0.058590   0.000000   0.058590 (  0.058587)
+msgpack (125)         0.005814   0.000000   0.005814 (  0.005812)
+protobuf (104)        0.046886   0.000000   0.046886 (  0.046960)
+json_oj (142)         0.003308   0.000000   0.003308 (  0.003305)
+rapidjson (142)       0.005942   0.000000   0.005942 (  0.005940)
+json (142)            0.009135   0.000000   0.009135 (  0.009143)
+bson (168)            0.014878   0.000000   0.014878 (  0.014876)
+
+------------------ IPS ------------------
+ruby 3.3.0 (2023-12-25 revision 5124f9ac75) [x86_64-linux]
+Warming up --------------------------------------
+   msgpack_zlib (79)    12.850k i/100ms
+  protobuf_zlib (65)     6.712k i/100ms
+   json_oj_zlib (83)    14.136k i/100ms
+ rapidjson_zlib (83)    13.082k i/100ms
+      json_zlib (83)    11.961k i/100ms
+      bson_zlib (96)     9.737k i/100ms
+       msgpack (125)    92.576k i/100ms
+      protobuf (104)    13.588k i/100ms
+       json_oj (142)   179.261k i/100ms
+     rapidjson (142)   111.799k i/100ms
+          json (142)    61.137k i/100ms
+          bson (168)    39.913k i/100ms
+Calculating -------------------------------------
+   msgpack_zlib (79)    128.361k (± 1.5%) i/s -    642.500k in   5.006489s
+  protobuf_zlib (65)     68.754k (± 2.0%) i/s -    349.024k in   5.078482s
+   json_oj_zlib (83)    141.988k (± 1.2%) i/s -    720.936k in   5.078248s
+ rapidjson_zlib (83)    128.851k (± 0.8%) i/s -    654.100k in   5.076738s
+      json_zlib (83)    118.376k (± 2.3%) i/s -    598.050k in   5.055218s
+      bson_zlib (96)     95.853k (± 3.0%) i/s -    486.850k in   5.084086s
+       msgpack (125)    899.815k (± 6.3%) i/s -      4.536M in   5.064965s
+      protobuf (104)    130.443k (± 2.2%) i/s -    652.224k in   5.002559s
+       json_oj (142)      1.755M (± 4.3%) i/s -      8.784M in   5.014557s
+     rapidjson (142)      1.112M (± 2.9%) i/s -      5.590M in   5.032805s
+          json (142)    593.702k (± 2.3%) i/s -      2.996M in   5.048471s
+          bson (168)    387.389k (± 1.3%) i/s -      1.956M in   5.049363s
+
+Comparison:
+       json_oj (142):  1755218.4 i/s
+     rapidjson (142):  1111717.6 i/s - 1.58x  slower
+       msgpack (125):   899814.5 i/s - 1.95x  slower
+          json (142):   593701.9 i/s - 2.96x  slower
+          bson (168):   387389.4 i/s - 4.53x  slower
+   json_oj_zlib (83):   141987.7 i/s - 12.36x  slower
+      protobuf (104):   130442.8 i/s - 13.46x  slower
+ rapidjson_zlib (83):   128850.9 i/s - 13.62x  slower
+   msgpack_zlib (79):   128361.2 i/s - 13.67x  slower
+      json_zlib (83):   118375.9 i/s - 14.83x  slower
+      bson_zlib (96):    95852.6 i/s - 18.31x  slower
+  protobuf_zlib (65):    68753.9 i/s - 25.53x  slower
+
+================== END ==================
+
+==================================================================================================================================
+
+Deserialization
+6000 iterations
+=================================================================
+
+Type: entities
+Rehearsal ---------------------------------------------------------
+msgpack_zlib (true)     0.305224   0.000000   0.305224 (  0.305223)
+protobuf_zlib (false)   2.134594   0.000000   2.134594 (  2.134666)
+json_oj_zlib (true)     0.374747   0.003895   0.378642 (  0.378643)
+rapidjson_zlib (true)   0.346824   0.000000   0.346824 (  0.346834)
+json_zlib (true)        0.460182   0.000000   0.460182 (  0.460202)
+bson_zlib (true)        0.769722   0.000002   0.769724 (  0.769735)
+msgpack (true)          0.304451   0.000000   0.304451 (  0.304558)
+protobuf (false)        2.094792   0.000000   2.094792 (  2.094897)
+json_oj (true)          0.320864   0.000000   0.320864 (  0.320864)
+rapidjson (true)        0.292922   0.000000   0.292922 (  0.292940)
+json (true)             0.400997   0.000000   0.400997 (  0.401022)
+bson (true)             0.695702   0.000000   0.695702 (  0.695701)
+------------------------------------------------ total: 8.504918sec
+
+                            user     system      total        real
+msgpack_zlib (true)     0.307669   0.000000   0.307669 (  0.307677)
+protobuf_zlib (false)   2.135699   0.000000   2.135699 (  2.135770)
+json_oj_zlib (true)     0.377370   0.000000   0.377370 (  0.377391)
+rapidjson_zlib (true)   0.347028   0.000002   0.347030 (  0.347124)
+json_zlib (true)        0.452359   0.000000   0.452359 (  0.452437)
+bson_zlib (true)        0.743652   0.000000   0.743652 (  0.743748)
+msgpack (true)          0.256053   0.000000   0.256053 (  0.256088)
+protobuf (false)        2.093954   0.000000   2.093954 (  2.094357)
+json_oj (true)          0.345846   0.000000   0.345846 (  0.345977)
+rapidjson (true)        0.292317   0.000000   0.292317 (  0.292315)
+json (true)             0.399933   0.000000   0.399933 (  0.399927)
+bson (true)             0.687059   0.000474   0.687533 (  0.687544)
+
+------------------ IPS ------------------
+ruby 3.3.0 (2023-12-25 revision 5124f9ac75) [x86_64-linux]
+Warming up --------------------------------------
+ msgpack_zlib (true)     1.954k i/100ms
+protobuf_zlib (false)
+                       282.000 i/100ms
+ json_oj_zlib (true)     1.600k i/100ms
+rapidjson_zlib (true)
+                         1.726k i/100ms
+    json_zlib (true)     1.200k i/100ms
+    bson_zlib (true)   806.000 i/100ms
+      msgpack (true)     2.364k i/100ms
+    protobuf (false)   288.000 i/100ms
+      json_oj (true)     1.884k i/100ms
+    rapidjson (true)     2.066k i/100ms
+         json (true)     1.502k i/100ms
+         bson (true)   881.000 i/100ms
+Calculating -------------------------------------
+ msgpack_zlib (true)     19.682k (± 2.5%) i/s -     99.654k in   5.066403s
+protobuf_zlib (false)
+                          2.810k (± 3.5%) i/s -     14.100k in   5.023778s
+ json_oj_zlib (true)     15.659k (± 5.2%) i/s -     78.400k in   5.025144s
+rapidjson_zlib (true)
+                         17.018k (± 2.9%) i/s -     86.300k in   5.075421s
+    json_zlib (true)     13.164k (± 1.7%) i/s -     66.000k in   5.015268s
+    bson_zlib (true)      7.920k (± 3.0%) i/s -     40.300k in   5.092862s
+      msgpack (true)     23.195k (± 3.4%) i/s -    115.836k in   5.000863s
+    protobuf (false)      2.856k (± 2.8%) i/s -     14.400k in   5.046739s
+      json_oj (true)     18.599k (± 3.6%) i/s -     94.200k in   5.072034s
+    rapidjson (true)     20.430k (± 2.2%) i/s -    103.300k in   5.058987s
+         json (true)     14.737k (± 6.9%) i/s -     73.598k in   5.029552s
+         bson (true)      8.723k (± 2.4%) i/s -     44.050k in   5.052668s
+
+Comparison:
+      msgpack (true):    23194.7 i/s
+    rapidjson (true):    20429.8 i/s - 1.14x  slower
+ msgpack_zlib (true):    19682.4 i/s - 1.18x  slower
+      json_oj (true):    18598.7 i/s - 1.25x  slower
+rapidjson_zlib (true):    17018.4 i/s - 1.36x  slower
+ json_oj_zlib (true):    15659.0 i/s - 1.48x  slower
+         json (true):    14737.0 i/s - 1.57x  slower
+    json_zlib (true):    13164.0 i/s - 1.76x  slower
+         bson (true):     8723.4 i/s - 2.66x  slower
+    bson_zlib (true):     7920.4 i/s - 2.93x  slower
+    protobuf (false):     2855.9 i/s - 8.12x  slower
+protobuf_zlib (false):     2810.5 i/s - 8.25x  slower
+
+================== END ==================
+
+Type: menu
+Rehearsal ---------------------------------------------------------
+msgpack_zlib (true)     0.024318   0.000000   0.024318 (  0.024321)
+protobuf_zlib (false)   0.140468   0.000000   0.140468 (  0.140479)
+json_oj_zlib (true)     0.026573   0.000000   0.026573 (  0.026578)
+rapidjson_zlib (true)   0.020565   0.000000   0.020565 (  0.020568)
+json_zlib (true)        0.027393   0.000000   0.027393 (  0.027396)
+bson_zlib (true)        0.034942   0.000000   0.034942 (  0.034944)
+msgpack (true)          0.012266   0.000000   0.012266 (  0.012268)
+protobuf (false)        0.124673   0.000000   0.124673 (  0.124676)
+json_oj (true)          0.012949   0.000000   0.012949 (  0.012952)
+rapidjson (true)        0.009447   0.000000   0.009447 (  0.009448)
+json (true)             0.016529   0.000000   0.016529 (  0.016531)
+bson (true)             0.022707   0.000000   0.022707 (  0.022721)
+------------------------------------------------ total: 0.472830sec
+
+                            user     system      total        real
+msgpack_zlib (true)     0.023798   0.000148   0.023946 (  0.023945)
+protobuf_zlib (false)   0.139752   0.000000   0.139752 (  0.139768)
+json_oj_zlib (true)     0.029194   0.000000   0.029194 (  0.029196)
+rapidjson_zlib (true)   0.017551   0.003999   0.021550 (  0.021553)
+json_zlib (true)        0.027722   0.000000   0.027722 (  0.027721)
+bson_zlib (true)        0.034853   0.000000   0.034853 (  0.034853)
+msgpack (true)          0.011802   0.000000   0.011802 (  0.011802)
+protobuf (false)        0.132232   0.000000   0.132232 (  0.132240)
+json_oj (true)          0.012140   0.000000   0.012140 (  0.012138)
+rapidjson (true)        0.009691   0.000000   0.009691 (  0.009690)
+json (true)             0.016016   0.000000   0.016016 (  0.016055)
+bson (true)             0.022697   0.000000   0.022697 (  0.022705)
+
+------------------ IPS ------------------
+ruby 3.3.0 (2023-12-25 revision 5124f9ac75) [x86_64-linux]
+Warming up --------------------------------------
+ msgpack_zlib (true)    25.528k i/100ms
+protobuf_zlib (false)
+                         4.262k i/100ms
+ json_oj_zlib (true)    25.608k i/100ms
+rapidjson_zlib (true)
+                        29.412k i/100ms
+    json_zlib (true)    21.377k i/100ms
+    bson_zlib (true)    17.234k i/100ms
+      msgpack (true)    48.662k i/100ms
+    protobuf (false)     4.802k i/100ms
+      json_oj (true)    55.636k i/100ms
+    rapidjson (true)    68.470k i/100ms
+         json (true)    39.107k i/100ms
+         bson (true)    25.822k i/100ms
+Calculating -------------------------------------
+ msgpack_zlib (true)    253.809k (± 3.4%) i/s -      1.276M in   5.035514s
+protobuf_zlib (false)
+                         43.004k (± 2.3%) i/s -    217.362k in   5.057375s
+ json_oj_zlib (true)    259.797k (± 2.1%) i/s -      1.306M in   5.029591s
+rapidjson_zlib (true)
+                        255.487k (±21.4%) i/s -      1.235M in   5.112454s
+    json_zlib (true)    210.412k (±15.6%) i/s -      1.026M in   5.053542s
+    bson_zlib (true)    175.248k (± 2.8%) i/s -    878.934k in   5.019572s
+      msgpack (true)    522.065k (± 1.6%) i/s -      2.628M in   5.034679s
+    protobuf (false)     49.461k (± 2.1%) i/s -    249.704k in   5.050880s
+      json_oj (true)    546.160k (± 2.7%) i/s -      2.782M in   5.097159s
+    rapidjson (true)    660.887k (± 4.0%) i/s -      3.355M in   5.084966s
+         json (true)    385.113k (± 3.3%) i/s -      1.955M in   5.083065s
+         bson (true)    258.144k (± 6.9%) i/s -      1.291M in   5.030207s
+
+Comparison:
+    rapidjson (true):   660887.3 i/s
+      json_oj (true):   546160.4 i/s - 1.21x  slower
+      msgpack (true):   522065.1 i/s - 1.27x  slower
+         json (true):   385112.9 i/s - 1.72x  slower
+ json_oj_zlib (true):   259797.4 i/s - 2.54x  slower
+         bson (true):   258144.4 i/s - 2.56x  slower
+rapidjson_zlib (true):   255487.5 i/s - 2.59x  slower
+ msgpack_zlib (true):   253809.2 i/s - 2.60x  slower
+    json_zlib (true):   210412.5 i/s - 3.14x  slower
+    bson_zlib (true):   175248.1 i/s - 3.77x  slower
+    protobuf (false):    49460.5 i/s - 13.36x  slower
+protobuf_zlib (false):    43003.8 i/s - 15.37x  slower
+
+================== END ==================

@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package proto;
+
+enum Direction {
+  up = 0;
+  down = 1;
+  left = 2;
+  right = 3;
+}
+
+message Entity {
+  string class = 1;
+  float x = 2;
+  float y = 3;
+  string type = 4;
+  string sound = 5;
+  Direction direction = 6;
+  bool reverse = 7;
+  bool fast = 8;
+  bool triggered = 9;
+  int32 id = 10;
+  bool moving = 11;
+  string skull_effect = 12;
+  bool winning = 13;
+  int32 dead_at = 14;
+  int32 current_death_sprite = 15;
+  int32 stunned_at = 16;
+  int32 burning_index = 17;
+  int32 index = 18;
+}
+
+message EntityList {
+  repeated Entity entities = 1;
+}
