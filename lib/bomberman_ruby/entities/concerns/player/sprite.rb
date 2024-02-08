@@ -6,8 +6,6 @@ module BombermanRuby
       module Player
         module Sprite
           include SmallSprite
-
-          ASSETS_PATH = "#{__dir__}/../../../../../assets".freeze
           PLAYER_Z = 10
           SPRITE_COUNT = 12
           SPRITE_WIDTH = 17

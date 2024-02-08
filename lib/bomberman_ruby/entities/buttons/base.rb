@@ -6,7 +6,6 @@ module BombermanRuby
       class Base < Entities::Base
         include Concerns::Triggerable
 
-        ASSETS_PATH = "#{__dir__}/../../../../assets".freeze
         SPRITES = Gosu::Image.load_tiles(
           "#{ASSETS_PATH}/images/buttons.png",
           Window::SPRITE_SIZE,

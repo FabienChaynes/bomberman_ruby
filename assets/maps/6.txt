@@ -1,0 +1,11 @@
+xxxxxxxxxxxxxxx
+x↓.sssssssss.←x
+x.xsxsxsxsxsx.x
+xss→sssssss↓ssx
+xsxsxsxsxsxsxsx
+xssssdsssussssx
+xsxsxsxsxsxsxsx
+xss↑sssssss←ssx
+x.xsxsxsxsxsx.x
+x→.sssssssss.↑x
+xxxxxxxxxxxxxxx

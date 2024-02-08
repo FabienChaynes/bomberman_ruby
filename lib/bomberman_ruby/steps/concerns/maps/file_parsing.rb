@@ -37,6 +37,12 @@ module BombermanRuby
             "├" => [Entities::Pipes::Left],
             "┤" => [Entities::Pipes::Right],
             "p" => [Entities::Pipes::Base],
+            "↓" => [Entities::CurveMarks::Static::Down],
+            "←" => [Entities::CurveMarks::Static::Left],
+            "→" => [Entities::CurveMarks::Static::Right],
+            "↑" => [Entities::CurveMarks::Static::Up],
+            "d" => [Entities::CurveMarks::Rotating::Down],
+            "u" => [Entities::CurveMarks::Rotating::Up],
           }.freeze
           STARTING_POSITION_CHARS = ("0"..(Games::Base::MAX_PLAYER_COUNT - 1).to_s)
           PLAYER_CONFIG_KEYS = %i[
@@ -53,9 +59,7 @@ module BombermanRuby
           def load!
             lines = File.read(@map_path).split("\n").map(&:chars)
             lines.each_with_index do |line, y|
-              line.each_with_index do |c, x|
-                load_coord!(c, x, y)
-              end
+              line.each_with_index { |c, x| load_coord!(c, x, y) }
             end
             load_items!
             load_players!

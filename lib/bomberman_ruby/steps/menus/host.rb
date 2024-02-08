@@ -5,7 +5,8 @@ module BombermanRuby
     module Menus
       class Host < Base
         include Steps::Concerns::Hosts::Networkable
-        MAP_COUNT = 6
+
+        MAP_COUNT = 7
         MAP_CHANGE_DELAY = 250
         MAP_STEP_ID = 1
 

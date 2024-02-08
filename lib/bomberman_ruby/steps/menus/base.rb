@@ -4,7 +4,6 @@ module BombermanRuby
   module Steps
     module Menus
       class Base < Steps::Base
-        ASSETS_PATH = "#{__dir__}/../../../../assets".freeze
         BACKGROUND = Gosu::Image.new("#{ASSETS_PATH}/images/menu_background.png")
         BACKGROUND_Z = 0
         INPUT_Z = 1
@@ -30,7 +29,7 @@ module BombermanRuby
               .draw(i * (Entities::Player::SPRITE_WIDTH + INPUT_SPRITE_MARGIN), INPUT_Z)
           end
           @map_icon.draw
-          FONT.draw_text("Press action to launch the game", 0, Window::HEIGHT - FONT_SIZE, INPUT_Z, 1, 1, FONT_COLOR)
+          FONT.draw_text("Press action to launch the game", 2, Window::HEIGHT - FONT_SIZE, INPUT_Z, 1, 1, FONT_COLOR)
         end
 
         private

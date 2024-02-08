@@ -2,9 +2,11 @@
 
 module BombermanRuby
   module Entities
-    module Blocks
+    module CurveMarks
       class Base < Entities::Base
-        include Concerns::Blockable
+        def enable(bomb)
+          bomb.direction = @direction
+        end
       end
     end
   end

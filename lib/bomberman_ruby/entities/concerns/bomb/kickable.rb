@@ -25,6 +25,7 @@ module BombermanRuby
               return
             end
             @y += y_delta
+            enable_curve_mark!
           end
 
           def move_horizontal!
@@ -38,6 +39,15 @@ module BombermanRuby
               return
             end
             @x += x_delta
+            enable_curve_mark!
+          end
+
+          def enable_curve_mark!
+            @map.entities.find do |entity|
+              next unless entity.is_a?(CurveMarks::Base)
+
+              entity.x == @x && entity.y == @y
+            end&.enable(self)
           end
         end
       end

@@ -4,7 +4,6 @@ module BombermanRuby
   module Entities
     module Conveyors
       class Base < Entities::Base
-        ASSETS_PATH = "#{__dir__}/../../../../assets".freeze
         CONVEYOR_SPRITES = Gosu::Image.load_tiles(
           "#{ASSETS_PATH}/images/conveyor.png",
           Window::SPRITE_SIZE,

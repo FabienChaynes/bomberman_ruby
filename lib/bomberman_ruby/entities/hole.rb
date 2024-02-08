@@ -15,7 +15,7 @@ module BombermanRuby
       HOLE_Z = 2
       SERIALIZABLE_VARS = (Base::SERIALIZABLE_VARS + %i[index]).freeze
 
-      attr_accessor :index
+      attr_writer :index
 
       def initialize(args)
         super(**args)

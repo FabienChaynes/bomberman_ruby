@@ -13,7 +13,12 @@ module BombermanRuby
           super
           @map_path = "#{ASSETS_PATH}/maps/#{index}.txt"
           @map_config_path = "#{ASSETS_PATH}/maps/#{index}.yml"
-          @starting_positions = {}
+          @starting_positions = {
+            0 => StartingPosition.new(grid_x: 1, grid_y: 1),
+            1 => StartingPosition.new(grid_x: 13, grid_y: 9),
+            2 => StartingPosition.new(grid_x: 1, grid_y: 9),
+            3 => StartingPosition.new(grid_x: 13, grid_y: 1),
+          }
           load!
         end
 

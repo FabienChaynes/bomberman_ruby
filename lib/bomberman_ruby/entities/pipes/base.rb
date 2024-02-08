@@ -4,7 +4,6 @@ module BombermanRuby
   module Entities
     module Pipes
       class Base < Entities::Base
-        ASSETS_PATH = "#{__dir__}/../../../../assets".freeze
         HORIZONTAL_PIPES_SPRITES = Gosu::Image.load_tiles(
           "#{ASSETS_PATH}/images/horizontal_pipes.png",
           Window::SPRITE_SIZE * 3,

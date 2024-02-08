@@ -9,7 +9,6 @@ module BombermanRuby
         ITEM_Z = 4
         COLOR_Z = 3
         BURNING_Z = 15
-        ASSETS_PATH = "#{__dir__}/../../../../assets".freeze
         ITEMS_SPRITES = Gosu::Image.load_tiles(
           "#{ASSETS_PATH}/images/items.png",
           Window::SPRITE_SIZE,
