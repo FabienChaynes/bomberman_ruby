@@ -104,3 +104,7 @@ Gamepads can be mapped using the gamepads buttons names:
     - GP_0_BUTTON_1
 ```
 You can map several gamepads with `GP_1_*`, `GP_2_*`, etc...
+
+## Network application protocol
+
+A description of the [application protocol](https://en.wikipedia.org/wiki/Application_layer) can be found in [APPLICATION_PROTOCOL.md](APPLICATION_PROTOCOL.md). This can be used to create other clients (e.g. a full client in a different language, a client acting as a bot, etc...).
