@@ -8,10 +8,12 @@ require "msgpack"
 require "oj"
 require "rapidjson"
 require "zlib"
-require_relative "definitions/entities_pb.rb"
+require_relative "definitions/entities_pb"
 
+# rubocop:disable Layout/SpaceInsideHashLiteralBraces, Layout/SpaceAroundOperators, Style/HashSyntax, Layout/LineLength
 menu = [{:class=>"BombermanRuby::Inputs::Local"}, {:class=>"BombermanRuby::Inputs::Local"}, {:class=>"BombermanRuby::Steps::Menus::MapIcon", :index=>0}]
 entities = [{:class=>"Blocks::Soft", :x=>160, :y=>16, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>112, :y=>32, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>144, :y=>32, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>176, :y=>32, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>32, :y=>48, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>48, :y=>48, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>80, :y=>48, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>96, :y=>48, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>128, :y=>48, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>160, :y=>48, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>192, :y=>48, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>16, :y=>64, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>48, :y=>64, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>80, :y=>64, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>144, :y=>64, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>176, :y=>64, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>208, :y=>64, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>16, :y=>80, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>32, :y=>80, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>48, :y=>80, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>64, :y=>80, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>80, :y=>80, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>96, :y=>80, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>112, :y=>80, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>144, :y=>80, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>176, :y=>80, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>208, :y=>80, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>16, :y=>96, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>48, :y=>96, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>80, :y=>96, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>112, :y=>96, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>144, :y=>96, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>176, :y=>96, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>16, :y=>112, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>32, :y=>112, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>48, :y=>112, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>64, :y=>112, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>112, :y=>112, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>160, :y=>112, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>176, :y=>112, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>192, :y=>112, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>208, :y=>112, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>48, :y=>128, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>80, :y=>128, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>144, :y=>128, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>176, :y=>128, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>48, :y=>144, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>64, :y=>144, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>80, :y=>144, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>96, :y=>144, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>144, :y=>144, :burning_index=>nil}, {:class=>"Blocks::Soft", :x=>160, :y=>144, :burning_index=>nil}, {:class=>"Items::SpeedUp", :x=>96, :y=>16, :burning_index=>nil}, {:class=>"Fire", :x=>16, :y=>16, :burning_index=>4, :type=>:center, :sound=>nil}, {:class=>"Fire", :x=>32, :y=>16, :burning_index=>4, :type=>:middle_right, :sound=>nil}, {:class=>"Fire", :x=>48, :y=>16, :burning_index=>4, :type=>:right, :sound=>nil}, {:class=>"Fire", :x=>16, :y=>32, :burning_index=>4, :type=>:middle_bottom, :sound=>nil}, {:class=>"Fire", :x=>16, :y=>48, :burning_index=>4, :type=>:bottom, :sound=>nil}, {:class=>"Player", :x=>46, :y=>24, :id=>0, :direction=>:down, :moving=>false, :skull_effect=>nil, :sound=>nil, :winning=>false, :dead_at=>nil, :current_death_sprite=>0, :stunned_at=>nil}, {:class=>"Player", :x=>208, :y=>136, :id=>1, :direction=>:down, :moving=>false, :skull_effect=>nil, :sound=>nil, :winning=>false, :dead_at=>nil, :current_death_sprite=>0, :stunned_at=>nil}]
+# rubocop:enable Layout/SpaceInsideHashLiteralBraces, Layout/SpaceAroundOperators, Style/HashSyntax, Layout/LineLength
 
 ITERATIONS = 6_000
 
@@ -85,8 +87,8 @@ def zlib_decompress(data)
   Zlib::Inflate.inflate(data)
 end
 
-def stringify_hash(h)
-  h.transform_keys(&:to_s).transform_values { _1.is_a?(Symbol) ? _1.to_s : _1 }
+def stringify_hash(hash)
+  hash.transform_keys(&:to_s).transform_values { _1.is_a?(Symbol) ? _1.to_s : _1 }
 end
 
 hashes = {
@@ -141,7 +143,7 @@ hashes.each do |type, arr|
   puts "Type: #{type}"
   Benchmark.bmbm do |x|
     serialization_methods.each do |serialization_method, l|
-      x.report("#{serialization_method} (#{l.call(arr).bytesize })") { ITERATIONS.times { l.call(arr) } }
+      x.report("#{serialization_method} (#{l.call(arr).bytesize})") { ITERATIONS.times { l.call(arr) } }
     end
   end
   puts ""
@@ -149,7 +151,7 @@ hashes.each do |type, arr|
   puts "------------------ IPS ------------------"
   Benchmark.ips do |x|
     serialization_methods.each do |serialization_method, l|
-      x.report("#{serialization_method} (#{l.call(arr).bytesize })") { l.call(arr) }
+      x.report("#{serialization_method} (#{l.call(arr).bytesize})") { l.call(arr) }
       x.compare!
     end
   end
@@ -157,7 +159,7 @@ hashes.each do |type, arr|
   puts ""
 end
 
-puts "=================================================================================================================================="
+puts "================================================================================================================="
 puts ""
 
 puts "Deserialization"
@@ -168,7 +170,7 @@ serialized_strings.each do |type, data|
   puts "Type: #{type}"
   Benchmark.bmbm do |x|
     deserialization_methods.each do |deserialization_method, l|
-      x.report("#{deserialization_method} (#{l.call(data[deserialization_method]) == hashes[type] })") do
+      x.report("#{deserialization_method} (#{l.call(data[deserialization_method]) == hashes[type]})") do
         ITERATIONS.times do
           l.call(data[deserialization_method])
         end
@@ -180,7 +182,7 @@ serialized_strings.each do |type, data|
   puts "------------------ IPS ------------------"
   Benchmark.ips do |x|
     deserialization_methods.each do |deserialization_method, l|
-      x.report("#{deserialization_method} (#{l.call(data[deserialization_method]) == hashes[type] })") do
+      x.report("#{deserialization_method} (#{l.call(data[deserialization_method]) == hashes[type]})") do
         l.call(data[deserialization_method])
       end
       x.compare!
@@ -189,4 +191,3 @@ serialized_strings.each do |type, data|
   puts "================== END =================="
   puts ""
 end
-
