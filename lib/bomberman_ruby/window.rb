@@ -23,11 +23,11 @@ module BombermanRuby
       end
     end
 
+    private
+
     def needs_cursor?
       false
     end
-
-    private
 
     def scaling_factor
       width_scaling_factor = width / WIDTH.to_f

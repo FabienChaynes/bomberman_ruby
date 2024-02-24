@@ -32,15 +32,15 @@ module BombermanRuby
           0
         end
 
-        def speed
-          fast ? 0.8 : 0.5
-        end
-
         def priority
           1
         end
 
         private
+
+        def speed
+          fast ? 0.8 : 0.5
+        end
 
         def current_sprite
           sprites = @reverse ? self.class::SPRITES.reverse : self.class::SPRITES

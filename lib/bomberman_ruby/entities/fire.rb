@@ -37,9 +37,8 @@ module BombermanRuby
       def initialize(args)
         @type = args.delete(:type)
         super(**args)
-        @burned_at = Gosu.milliseconds
-        @sound = :initial
-        @burning_index = 0
+        @sound = :initial if @type == :center
+        burn!
       end
 
       def update
@@ -52,8 +51,6 @@ module BombermanRuby
         sprite.draw_rot(@x, @y, Bomb::BOMB_Z, draw_angle, draw_center_x, draw_center_y)
         play_sound
       end
-
-      def burn!; end
 
       private
 
